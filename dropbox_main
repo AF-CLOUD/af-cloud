@@ -1,0 +1,123 @@
+import os
+import dropbox
+
+
+# def oauth2_flow_Redirect(app_key, app_secret, redirect_url, session, csrf):
+#     auth_flow = dropbox.oauth.DropboxOAuth2Flow(consumer_key=app_key,
+#                                                 consumer_secret=app_secret,
+#                                                 redirect_uri=redirect_url,
+#                                                 session=session,
+#                                                 csrf_token_session_key=csrf)
+#
+#     authorize_url = auth_flow.start()
+#     print("1. Go to: " + authorize_url)
+#     print("2. Click \"Allow\" (you might have to log in first).")
+#     print("3. Copy the authorization code.")
+#     auth_code = input("Enter the authorization code here: ").strip()
+#     print(type(auth_code))
+#     try:
+#         result = auth_flow.finish(auth_code)
+#         return result
+#     except Exception as e:
+#         print('Error: %s' % (e,))
+#         exit(1)
+
+def oauth2_flow_noRedirect(app_key, app_secret, access_type='legacy', scope=None):
+    """
+
+    :param app_key: Your API app’s “app key”
+    :param app_secret: Your API app’s “app secret”
+    :param access_type: the type of token to be requested. From the following enum:
+                        None - creates a token with the app default (either legacy or online)
+                        legacy - creates one long-lived token with no expiration
+                        online - create one short-lived token with an expiration
+                        offline - create one short-lived token with an expiration with a refresh token
+    :param scope: list of scopes to request in base oauth flow. ex) ['files.metadata.read',
+                                                                     'files.content.read',
+                                                                     'sharing.read',
+                                                                     'file_requests.read']
+                  If left blank, will default to all scopes for app
+
+    :return: OAuth2FlowNoRedirectResult(access_token, account_id, user_id, refresh_token, expiration, scope)
+    """
+
+    auth_flow = dropbox.oauth.DropboxOAuth2FlowNoRedirect(consumer_key=app_key,
+                                                          consumer_secret=app_secret,
+                                                          token_access_type=access_type,
+                                                          scope=scope)
+    authorize_url = auth_flow.start()
+    print("1. Go to: " + authorize_url)
+    print("2. Click \"Allow\" (you might have to log in first).")
+    print("3. Copy the authorization code.")
+    auth_code = input("Enter the authorization code here: ").strip()
+
+    try:
+        result = auth_flow.finish(auth_code)
+        return result
+    except Exception as e:
+        print('Error: %s' % (e,))
+        exit(1)
+
+
+def link_account_using_token(access_token):
+    dbx = dropbox.dropbox_client.Dropbox(oauth2_access_token=access_token)
+    dbx.users_get_current_account()
+    if isinstance(dbx, dropbox.dropbox_client.Dropbox):
+        print(" [*] Successfully set up client!")
+        return dbx
+    else:
+        print(" [!] Fail to link account")
+        exit(1)
+
+
+def get_file_metadata(dbx):
+    folders, files, deleted = [], [], []
+    for entry in dbx.files_list_folder('',
+                                       recursive=True,
+                                       include_media_info=True,
+                                       include_deleted=True,
+                                       include_has_explicit_shared_members=True,
+                                       include_mounted_folders=True,
+                                       limit=None,
+                                       shared_link=None,
+                                       include_property_groups=None,
+                                       include_non_downloadable_files=True).entries:
+        if isinstance(entry, dropbox.files.FolderMetadata): # content is folder
+            folders.append(entry)
+        elif isinstance(entry, dropbox.files.FileMetadata): # content is file
+            files.append(entry)
+        elif isinstance(entry, dropbox.files.DeletedMetadata):
+            deleted.append(entry)
+    return folders, files, deleted
+
+
+def download_file_to_local(dbx, download_path, file_path):
+    dbx.files_download_to_file(download_path, file_path)
+    
+
+if __name__ == '__main__':
+    '''
+    This example walks through a basic oauth flow using the existing long-lived token type
+    Populate your app key and app secret in order to run this locally
+    '''
+    APP_KEY = ""
+    APP_SECRET = ""
+    REDIRECT_URL = ""
+    SESSION = {}
+    CSRF = "dropbox-auth-csrf-token"
+    ACCESS_TYPE = "offline"
+    SCOPE = ["files.metadata.read",
+             "files.content.read",
+             "sharing.read",
+             "file_requests.read"]
+
+    oauth_result = oauth2_flow_noRedirect(APP_KEY, APP_SECRET)
+    # oauth_result = oauth2_flow_Redirect(APP_KEY, APP_SECRET, REDIRECT_URL, SESSION, CSRF)
+    dbx = link_account_using_token(oauth_result.access_token)
+
+    folders, files, deleted = get_file_metadata(dbx)
+    print("folders : ", [folder.name for folder in folders])
+    print("files   : ", [file.name for file in files])
+    print("deleted : ", [d.name for d in deleted])
+
+
