@@ -41,7 +41,7 @@ class GDrive:
             keyword = input("Input your Keyword: ")
             service = self.__G_Oauth()
             file_list = self.__get_keyword_flist(service, keyword)
-            self.__file_download(service, file_list[1][5], file_list[1][0], 'a')
+            self.__file_download(service, file_list[1][10], file_list[1][0], file_list[1][11])
             # csv or db 만드는 코드 추가
             # ex) save csv file
             # self.make_csv(file_list)
@@ -126,7 +126,9 @@ class GDrive:
             if page_token is None:
                 break
 
-        pprint(result)
+        for i in result:
+            print(i)
+
         return result
 
     def __get_keyword_flist(self, service, search_keyword: str):
@@ -154,7 +156,9 @@ class GDrive:
             if page_token is None:
                 break
 
-        pprint(search_result)
+        for i in search_result:
+            print(i)
+
         return search_result
 
     def __get_period_flist(self, service, search_keyword: str, period: list):
@@ -191,7 +195,19 @@ class GDrive:
     # FILE DOWNLOAD
     def __file_download(self, service, file_id, file_name, mimetype):
 
-        if mimetype == 'a':
+        if 'application/vnd.google-apps.' in mimetype:
+            request = service.files().export_media(fileId=file_id, mimeType='application/pdf')
+            fh = io.BytesIO()
+            downloader = MediaIoBaseDownload(fh, request)
+            done = False
+            while done is False:
+                status, done = downloader.next_chunk()
+                print("Download %d%%." % int(status.progress() * 100))
+            fh.seek(0)
+            with open(file_name + '.pdf', 'wb') as f:
+                shutil.copyfileobj(fh, f)
+
+        else:
             request = service.files().get_media(fileId=file_id)
             fh = io.BytesIO()
             downloader = MediaIoBaseDownload(fh, request)
@@ -201,19 +217,6 @@ class GDrive:
             while done is False:
                 status, done = downloader.next_chunk()
                 print(status)
-                print("Download %d%%." % int(status.progress() * 100))
-            fh.seek(0)
-            with open(file_name, 'wb') as f:
-                shutil.copyfileobj(fh, f)
-
-        elif mimetype == 'b':
-            request = drive_service.files().export_media(fileId=file_id,
-                                                         mimeType='application/pdf')
-            fh = io.BytesIO()
-            downloader = MediaIoBaseDownload(fh, request)
-            done = False
-            while done is False:
-                status, done = downloader.next_chunk()
                 print("Download %d%%." % int(status.progress() * 100))
             fh.seek(0)
             with open(file_name, 'wb') as f:
