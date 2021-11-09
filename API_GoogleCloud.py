@@ -224,7 +224,7 @@ class GDrive:
 
 if __name__ == '__main__':
     TOKEN_FILE = 'credentials.json'
-    PORT = 1234
+    PORT = 3377
     SCOPES = ['https://www.googleapis.com/auth/drive']
     g_drive = GDrive(TOKEN_FILE, PORT, SCOPES)
 
