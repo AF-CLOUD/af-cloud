@@ -53,7 +53,7 @@ class GDrive:
                     for i in download_number.split(" "):
                         down_start = time.time()
                         #self.__file_download(service, file_list[int(i, 10)][0], file_list[int(i, 10)][1])
-                        self.__file_download(service, file_list[int(i)][0], file_list[int(i)][1])
+                        self.__file_download(service, file_list[int(i)][10], file_list[int(i)][0], file_list[int(i)][11])
                         down_end = time.time()
                         print("%s | download time(s) : "%file_list[int(i)][1], down_end - down_start)
             except Exception as e:
@@ -123,15 +123,22 @@ class GDrive:
 
     def __get_flist(self, service):
         result = list()
-        result.append(['FileID', 'File name', 'is_shared', 'is_trashed', 'ctime'])  # 나중에 승아가 정리하면 변경 #
+        result.append(
+            ['File name', 'size', 'is_shared', 'is_trashed', 'CreatedTime', 'modifiedTime', 'lastModifyingUser',
+             'SharedWithMeTime', 'SharingUser.emailAddress', 'sharingUser.permissionID', 'FileID', 'mimeType'])
         page_token = None
         while True:
             response = service.files().list(q="mimeType != 'application/vnd.google-apps.folder'",
                                             spaces='drive',
-                                            fields='nextPageToken, files(id, name, shared, trashed, createdTime)',
+                                            fields='nextPageToken, files(id, size, name, trashed, createdTime, modifiedTime, lastModifyingUser, shared,'
+                                                   'sharedWithMeTime, sharingUser, mimeType)',
                                             pageToken=page_token).execute()
             for file in response.get('files', []):
-                result.append([file.get('id'), file.get('name'), file.get('shared'), file.get('trashed'), file.get('createdTime')])
+                result.append([file.get('name'), file.get('size'), file.get('shared'), file.get('trashed'),
+                               file.get('createdTime'), file.get('modifiedTime'),
+                               file.get('lastModifyingUser.displayName'), file.get('SharedWithMeTime'),
+                               file.get('sharingUser.emailAddress'), file.get('sharingUser.permissionID'),
+                               file.get('id'), file.get('mimeType')])
             page_token = response.get('nextPageToken', None)
             if page_token is None:
                 break
@@ -139,31 +146,60 @@ class GDrive:
 
     def __get_selection_flist(self, service, search_query: str):
         result = list()
-        result.append(['FileID', 'File name', 'is_shared', 'is_trashed', 'ctime'])  # 나중에 승아가 정리하면 변경 #
+        result.append(['File name', 'size', 'is_shared', 'is_trashed', 'CreatedTime', 'modifiedTime', 'lastModifyingUser',
+             'SharedWithMeTime', 'SharingUser.emailAddress', 'sharingUser.permissionID', 'FileID', 'mimeType'])
         page_token = None
         while True:
             response = service.files().list(q=search_query,
                                             spaces='drive',
-                                            fields='nextPageToken, files(id, name, shared, trashed, createdTime)',
+                                            fields='nextPageToken, files(id, size, name, trashed, createdTime, modifiedTime, lastModifyingUser, shared,'
+                                                   'sharedWithMeTime, sharingUser, mimeType)',
                                             pageToken=page_token).execute()
             for file in response.get('files', []):
-                result.append([file.get('id'), file.get('name'), file.get('shared'), file.get('trashed'), file.get('createdTime')])
+                result.append([file.get('name'), file.get('size'), file.get('shared'), file.get('trashed'), file.get('createdTime'), file.get('modifiedTime'),
+                                      file.get('lastModifyingUser'), file.get('SharedWithMeTime'),file.get('sharingUser.emailAddress'), file.get('sharingUser.permissionID'),
+                                      file.get('id'), file.get('mimeType')])
             page_token = response.get('nextPageToken', None)
             if page_token is None:
                 break
         return result
 
-    def __file_download(self, service, file_id, file_name):
-        request = service.files().get_media(fileId=file_id)
-        fh = io.BytesIO()
-        downloader = MediaIoBaseDownload(fh, request)
-        # with open('./' + file_id, 'wb') as f:
-        #     f.write(downloader)
-        done = False
-        while done is False:
-            status, done = downloader.next_chunk()
-            #print(status)
-            print("Download %d%%." % int(status.progress() * 100))
-        fh.seek(0)
-        with open(file_name, 'wb') as f:
-            shutil.copyfileobj(fh, f)
+    def __file_download(self, service, file_id, file_name, mimetype):
+
+        dic_mimetype = {
+            'application/vnd.google-apps.document': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
+            'application/vnd.google-apps.spreadsheet': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
+            'application/vnd.google-apps.presentation': 'application/vnd.openxmlformats-officedocument.presentationml.presentation'
+        }
+        mime_to_ext = {
+            'application/vnd.openxmlformats-officedocument.wordprocessingml.document': '.docx',
+            'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet': '.xlsx',
+            'application/vnd.openxmlformats-officedocument.presentationml.presentation': '.pptx'
+        }
+
+        if 'application/vnd.google-apps.' in mimetype:
+            request = service.files().export_media(fileId=file_id, mimeType=dic_mimetype[mimetype])
+            fh = io.BytesIO()
+            downloader = MediaIoBaseDownload(fh, request)
+            done = False
+            while done is False:
+                status, done = downloader.next_chunk()
+                print("Download %d%%." % int(status.progress() * 100))
+            fh.seek(0)
+            with open(file_name + mime_to_ext[dic_mimetype[mimetype]], 'wb') as f:
+                shutil.copyfileobj(fh, f)
+
+        else:
+            request = service.files().get_media(fileId=file_id)
+            fh = io.BytesIO()
+            downloader = MediaIoBaseDownload(fh, request)
+            # with open('./' + file_id, 'wb') as f:
+            #     f.write(downloader)
+            done = False
+            while done is False:
+                status, done = downloader.next_chunk()
+                print(status)
+                print("Download %d%%." % int(status.progress() * 100))
+            fh.seek(0)
+            with open(file_name, 'wb') as f:
+                shutil.copyfileobj(fh, f)
