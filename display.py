@@ -39,7 +39,7 @@ def start_menu():
 
 
 def select_menu():
-    num = int(input("Select Menu: "))
+    num = input("Select Menu: ")
     return num
 
 

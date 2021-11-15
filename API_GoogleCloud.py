@@ -25,41 +25,51 @@ class GDrive:
 
     def run(self):
         service = self.__G_Oauth()
+        tmp_csv = []
         while True:
             DIS.start_menu()
             menu = DIS.select_menu()
-            if menu == 0: # exit
-                exit(1)
-            if menu >= 3:
+            file_list = []
+            if menu == "0": # exit
+                break
+            elif menu == "1":  # all of file
+                file_list = self.__no_search(service)
+            elif menu == "2":  # select file
+                file_list = self.__search(service)
+            else:
                 DIS.invalid_menu()
                 continue
 
             # print file list
-            file_list = []
-            if menu == 1: # all of file
-                file_list = self.__no_search(service)
-            elif menu == 2: # select file
-                file_list = self.__search(service)
-
             DIS.show_file_list(file_list)
             # download file
-            try:
-                print("\n"
-                      "If you want to download file, enter the number of the files you want by dividing it into spacing.\n"
-                      "If you don't want, please click enter\n"
-                      "download input example: 19 2 10\n")
-                download_number = input("Input your number: ")
-                if download_number:
-                    for i in download_number.split(" "):
+            print("\n"
+                  "If you want to download file, enter the number of the files you want by dividing it into spacing.\n"
+                  "If you don't want, please click enter\n"
+                  "download input example: 1~4 19 10\n")
+            download_number_str = input("Input your number: ")
+            if download_number_str:
+                download_number = []
+                for s in download_number_str.split(" "):
+                    if "~" in s:
+                        start_num, end_num = s.split("~")
+                        download_number.extend([i for i in range(int(start_num), int(end_num) + 1)])
+                    else:
+                        download_number.append(int(s))
+
+                for i in download_number:
+                    try:
                         down_start = time.time()
                         #self.__file_download(service, file_list[int(i, 10)][0], file_list[int(i, 10)][1])
                         self.__file_download(service, file_list[int(i)][10], file_list[int(i)][0], file_list[int(i)][11])
                         down_end = time.time()
                         print("%s | download time(s) : "%file_list[int(i)][1], down_end - down_start)
-            except Exception as e:
-                print(" [-] Failed to file_download(); ", e)
+                    except Exception as e:
+                        print(" [-] Failed to file_download(); ", e)
 
-            #return file_list
+            tmp_csv.append(file_list)
+
+        return tmp_csv
 
     def __no_search(self, service):
         try:
@@ -169,7 +179,7 @@ class GDrive:
         dic_mimetype = {
             'application/vnd.google-apps.document': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',
             'application/vnd.google-apps.spreadsheet': 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
-            'application/vnd.google-apps.presentation': 'application/vnd.openxmlformats-officedocument.presentationml.presentation'
+            'application/vnd.google-apps.presentation': ['application/vnd.openxmlformats-officedocument.presentationml.presentation', 'pptx']
         }
         mime_to_ext = {
             'application/vnd.openxmlformats-officedocument.wordprocessingml.document': '.docx',
