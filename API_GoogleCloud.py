@@ -29,7 +29,6 @@ class GDrive:
         while True:
             DIS.start_menu()
             menu = DIS.select_menu()
-            file_list = []
             if menu == "0": # exit
                 break
             elif menu == "1":  # all of file
@@ -40,7 +39,6 @@ class GDrive:
                 DIS.invalid_menu()
                 continue
 
-            # print file list
             DIS.show_file_list(file_list)
             # download file
             print("\n"
@@ -60,12 +58,11 @@ class GDrive:
                 for i in download_number:
                     try:
                         down_start = time.time()
-                        #self.__file_download(service, file_list[int(i, 10)][0], file_list[int(i, 10)][1])
-                        self.__file_download(service, file_list[int(i)][10], file_list[int(i)][0], file_list[int(i)][11])
+                        self.__file_download(service, file_list[i][10], file_list[i][0], file_list[i][11])
                         down_end = time.time()
-                        print("%s | download time(s) : "%file_list[int(i)][1], down_end - down_start)
+                        print("%s | download time(s) : " % file_list[i][1], down_end - down_start)
                     except Exception as e:
-                        print(" [-] Failed to file_download(); ", e)
+                        print(" [-] Failed to download; ", e)
 
             tmp_csv.append(file_list)
 
@@ -74,7 +71,7 @@ class GDrive:
     def __no_search(self, service):
         try:
             file_list = self.__get_flist(service)
-            print(" [*] Success ")
+            print(" [*] Success no_search()")
             return file_list
         except Exception as error:
             print(" [!] Failed to no_search(); %s" % error)
@@ -157,7 +154,7 @@ class GDrive:
     def __get_selection_flist(self, service, search_query: str):
         result = list()
         result.append(['File name', 'size', 'is_shared', 'is_trashed', 'CreatedTime', 'modifiedTime', 'lastModifyingUser',
-             'SharedWithMeTime', 'SharingUser.emailAddress', 'sharingUser.permissionID', 'FileID', 'mimeType'])
+                       'SharedWithMeTime', 'SharingUser.emailAddress', 'sharingUser.permissionID', 'FileID', 'mimeType'])
         page_token = None
         while True:
             response = service.files().list(q=search_query,
