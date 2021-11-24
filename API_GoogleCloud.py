@@ -2,6 +2,7 @@
 # Reference: Google
 # Ver 1.0: Get Filelist + Searching Option(keyword, modified period)
 
+import os
 import os.path
 import io
 import shutil
@@ -86,7 +87,7 @@ class GDrive:
             search_keyword = g_input.get_keyword()
             if search_keyword:
                 search_keyword = '\'' + search_keyword + '\''
-                search_query = "".join([search_query, " and ", "name contains %s" % search_keyword])
+                search_query = "".join([search_query, " and ", "name contains %s or fullText contains %s" % (search_keyword, search_keyword)])
 
             search_period = g_input.get_m_period()
             if search_period[0] and search_period[1]:
@@ -116,7 +117,6 @@ class GDrive:
                 creds.refresh(Request())
             # Credential.json 파일은 실행하는 .py 파일과 동일한 위치에 있어야 함
             # Credential.json은 Google Cloud Platform API 서비스에서 다운 가능.
-            # Oauth 인증은 Desktop client / Web client 두팀으로 나눠서 진행예정
             else:
                 flow = InstalledAppFlow.from_client_secrets_file(self.token_file, scopes=self.scopes)
                 creds = flow.run_local_server(port=self.port)
@@ -125,7 +125,7 @@ class GDrive:
                 token.write(creds.to_json())
 
         service = build('drive', 'v3', credentials=creds)
-
+        os.remove('token.json')
         return service
 
     def __get_flist(self, service):
@@ -193,7 +193,7 @@ class GDrive:
                 status, done = downloader.next_chunk()
                 print("Download %d%%." % int(status.progress() * 100))
             fh.seek(0)
-            with open(file_name + mime_to_ext[dic_mimetype[mimetype]], 'wb') as f:
+            with open("./extract/" + file_name + mime_to_ext[dic_mimetype[mimetype]], 'wb') as f:
                 shutil.copyfileobj(fh, f)
 
         else:
@@ -208,5 +208,5 @@ class GDrive:
                 print(status)
                 print("Download %d%%." % int(status.progress() * 100))
             fh.seek(0)
-            with open(file_name, 'wb') as f:
+            with open("./extract/"+file_name, 'wb') as f:
                 shutil.copyfileobj(fh, f)

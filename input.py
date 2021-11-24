@@ -1,3 +1,4 @@
+import datetime
 
 class CInput:
 
@@ -28,8 +29,15 @@ class CInput:
               "Setting Files modified after a given date\n"
               "If you don't want to set period, please click enter\n"
               "period input example: 2021-06-04\n")
-        self.__m_period.append(input("Input the Start Time Point: "))
-        self.__m_period.append(input("Input the End Time Point: "))
+        start_time = input("Input the Start Time Point: ")
+        end_time = input("Input the End Time Point: ")
+
+        if start_time == '':
+            start_time = "1970-01-01"
+        if end_time == '':
+            end_time = datetime.datetime.now().strftime("%Y-%m-%d")
+        self.__m_period.append(start_time)
+        self.__m_period.append(end_time)
 
     def get_keyword(self):
         return self.__keyword

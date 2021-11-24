@@ -24,7 +24,7 @@ class CSVExport:
         self.__close_file()
 
     def __open_file(self):
-        f = self.file_name + str(time.time()) + ".csv"
+        f = 'export/' + self.file_name + str(time.time()) + ".csv"
         filename = os.path.join(os.path.dirname(os.path.realpath(__file__)), f)
         self.file_pointer = open(filename, 'w', newline='', encoding='UTF-16')
 

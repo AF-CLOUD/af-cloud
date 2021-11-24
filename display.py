@@ -101,7 +101,7 @@ def show_file_list(file_list):
         # else:
         #     file[3] = "Live"
 
-        print(f"{cnt:>5} | {file[0]:<60} | {str(file[1]):^5} | {str(file[2]):^5} | {str(file[3]):^5} | {str(file[4]):^10}")
+        print(f"{cnt:>5} | {file[0]:<60} | {str(file[1]):^5} | {str(file[2]):^5} | {str(file[3]):^5} | {str(file[4]):^10} | {str(file[5]):^10}")
 
 
 # def search_file_list(file_list):

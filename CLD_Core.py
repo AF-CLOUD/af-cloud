@@ -28,11 +28,13 @@ if cloud == 1:
         SCOPES = ['https://www.googleapis.com/auth/drive']
         drive = GDrive(TOKEN_FILE, PORT, SCOPES)
         tmp_csv = drive.run()
+        cnt = 0
 
         # make csv file
         for info in tmp_csv:
-            export = CSVExport("GDrive_search_")
+            export = CSVExport("GDrive_search_" + str(cnt))
             export.input_dict(info)
+            cnt += 1
         print(" [*] Export csv!")
     except Exception as e:
         print(" [-] Login Failed; ", e)
