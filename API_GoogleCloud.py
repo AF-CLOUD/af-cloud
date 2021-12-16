@@ -137,9 +137,9 @@ class GDrive:
 
     def __get_flist(self, service):
         result = list()
-        result.append(
-            ['file name', 'size', 'is_shared', 'is_trashed', 'createdTime', 'modifiedTime', 'lastModifyingUser',
-             'sharedWithMeTime', 'sharingUser.emailAddress', 'sharingUser.permissionID', 'fileID', 'mimeType'])
+        result.append(['file name', 'size', 'owners', 'lastModifyingUser', 'version', 'is_shared', 'is_trashed', 'createdTime','modifiedTime', 'fullFileExtension',
+                       'modifiedByMeTime', 'lastModifyingUser', 'md5Checksum', 'sharedWithMeTime','sharingUser.emailAddress', 'sharingUser.permissionID',
+                       'imageMediaMetadata.time', 'imageMediaMetadata.cameraMake', 'fileID', 'mimeType'])
         page_token = None
         while True:
             response = service.files().list(q="mimeType != 'application/vnd.google-apps.folder'",
@@ -149,11 +149,14 @@ class GDrive:
                                                    'sharedWithMeTime, sharingUser, mimeType)',
                                             pageToken=page_token).execute()
             for file in response.get('files', []):
-                result.append([file.get('name'), file.get('size'), file.get('shared'), file.get('trashed'),
-                               file.get('createdTime'), file.get('modifiedTime'),
-                               file.get('lastModifyingUser.displayName'), file.get('SharedWithMeTime'),
-                               file.get('sharingUser.emailAddress'), file.get('sharingUser.permissionID'),
-                               file.get('id'), file.get('mimeType')])
+                result.append([file.get('name'), file.get('size'), file.get('owners.displayName'),
+                               file.get('lastModifyingUser.displayName'), file.get('version'), file.get('shared'),
+                               file.get('trashed'), file.get('createdTime'), file.get('modifiedTime'),
+                               file.get('fullFileExtension'), file.get('modifiedByMeTime'),
+                               file.get('lastModifyingUser'), file.get('md5Checksum'), file.get('SharedWithMeTime'),
+                               file.get('sharingUser.emailAddress'),
+                               file.get('sharingUser.permissionID'), file.get('imageMediaMetadata.time'),
+                               file.get('imageMediaMetadata.cameraMake'), file.get('id'), file.get('mimeType')])
             page_token = response.get('nextPageToken', None)
             if page_token is None:
                 break
@@ -161,8 +164,9 @@ class GDrive:
 
     def __get_selection_flist(self, service, search_query: str):
         result = list()
-        result.append(['file name', 'size', 'is_shared', 'is_trashed', 'createdTime', 'modifiedTime', 'lastModifyingUser',
-                       'sharedWithMeTime', 'sharingUser.emailAddress', 'sharingUser.permissionID', 'fileID', 'mimeType'])
+        result.append(['file name', 'size', 'owners', 'lastModifyingUser', 'version', 'is_shared', 'is_trashed', 'createdTime', 'modifiedTime',
+                       'fullFileExtension', 'modifiedByMeTime', 'lastModifyingUser', 'md5Checksum', 'sharedWithMeTime', 'sharingUser.emailAddress', 'sharingUser.permissionID',
+                       'imageMediaMetadata.time', 'imageMediaMetadata.cameraMake', 'fileID', 'mimeType'])
         page_token = None
         while True:
             response = service.files().list(q=search_query,
@@ -172,9 +176,10 @@ class GDrive:
                                                    'sharedWithMeTime, sharingUser, mimeType)',
                                             pageToken=page_token).execute()
             for file in response.get('files', []):
-                result.append([file.get('name'), file.get('size'), file.get('shared'), file.get('trashed'), file.get('createdTime'), file.get('modifiedTime'),
-                                      file.get('lastModifyingUser'), file.get('SharedWithMeTime'),file.get('sharingUser.emailAddress'), file.get('sharingUser.permissionID'),
-                                      file.get('id'), file.get('mimeType')])
+                result.append([file.get('name'), file.get('size'), file.get('owners.displayName'), file.get('lastModifyingUser.displayName'), file.get('version'),  file.get('shared'),
+                               file.get('trashed'), file.get('createdTime'), file.get('modifiedTime'), file.get('fullFileExtension'), file.get('modifiedByMeTime'),
+                               file.get('lastModifyingUser'), file.get('md5Checksum'), file.get('SharedWithMeTime'), file.get('sharingUser.emailAddress'),
+                               file.get('sharingUser.permissionID'), file.get('imageMediaMetadata.time'), file.get('imageMediaMetadata.cameraMake'), file.get('id'), file.get('mimeType')])
             page_token = response.get('nextPageToken', None)
             if page_token is None:
                 break
