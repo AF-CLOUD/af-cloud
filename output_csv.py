@@ -1,6 +1,7 @@
 import csv
 import os
-import time
+from pathlib import Path
+import datetime
 
 
 class CSVExport:
@@ -10,6 +11,8 @@ class CSVExport:
         self.file_pointer = None
 
     def input_dict(self, file_list):
+        Path('./export').mkdir(parents=True, exist_ok=True)
+
         self.__open_file()
 
         column = file_list[0]
@@ -24,7 +27,7 @@ class CSVExport:
         self.__close_file()
 
     def __open_file(self):
-        f = 'export/' + self.file_name + str(time.time()) + ".csv"
+        f = 'export/' + self.file_name + datetime.datetime.now().strftime('_%Y%m%d_%H-%M-%S') + ".csv"
         filename = os.path.join(os.path.dirname(os.path.realpath(__file__)), f)
         self.file_pointer = open(filename, 'w', newline='', encoding='UTF-16')
 

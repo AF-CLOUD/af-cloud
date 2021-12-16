@@ -4,6 +4,7 @@
 
 import os
 import os.path
+from pathlib import Path
 import io
 import shutil
 import time
@@ -45,7 +46,7 @@ class GDrive:
             print("\n"
                   "To download file(s), put file numbers separated by space.\n"
                   "If you don't want to download file(s), hit enter.\n"
-                  "Example input: 1~4 19 10\n")
+                  "Example input: 1~4 19 10~11\n")
             download_number_str = input("Put file numbers: ")
             if download_number_str:
                 download_number = []
@@ -61,7 +62,7 @@ class GDrive:
                         down_start = time.time()
                         self.__file_download(service, file_list[i][10], file_list[i][0], file_list[i][11])
                         down_end = time.time()
-                        print("%s | download time(s) : " % file_list[i][1], down_end - down_start)
+                        print("%s | Download time(s) : " % file_list[i][1], down_end - down_start)
                     except Exception as e:
                         print(" [-] Failed to download; ", e)
 
@@ -84,11 +85,17 @@ class GDrive:
             g_input.set_gdrive_inputs()
 
             search_query = "mimeType != 'application/vnd.google-apps.folder'"
-            search_keyword = g_input.get_keyword()
-            if search_keyword:
-                search_keyword = '\'' + search_keyword + '\''
-                search_query = "".join([search_query, " and ", "name contains %s or fullText contains %s" % (search_keyword, search_keyword)])
-
+            # Set keyword - name & text
+            search_keyword_name = g_input.get_keyword_name()
+            if search_keyword_name:
+                search_keyword_name = '\'' + search_keyword_name + '\''
+                search_query = "".join([search_query, " and ", "name contains %s" % search_keyword_name])
+            # Set keyword - text
+            search_keyword_text = g_input.get_keyword_text()
+            if search_keyword_text:
+                search_keyword_text = '\'' + search_keyword_text + '\''
+                search_query = "".join([search_query, " and ", "fullText contains %s" % search_keyword_text])
+            # Set period
             search_period = g_input.get_m_period()
             if search_period[0] and search_period[1]:
                 s_period = '\'' + search_period[0] + "T00:00:00" + '\''
@@ -131,13 +138,14 @@ class GDrive:
     def __get_flist(self, service):
         result = list()
         result.append(
-            ['File name', 'size', 'is_shared', 'is_trashed', 'CreatedTime', 'modifiedTime', 'lastModifyingUser',
-             'SharedWithMeTime', 'SharingUser.emailAddress', 'sharingUser.permissionID', 'FileID', 'mimeType'])
+            ['file name', 'size', 'is_shared', 'is_trashed', 'createdTime', 'modifiedTime', 'lastModifyingUser',
+             'sharedWithMeTime', 'sharingUser.emailAddress', 'sharingUser.permissionID', 'fileID', 'mimeType'])
         page_token = None
         while True:
             response = service.files().list(q="mimeType != 'application/vnd.google-apps.folder'",
                                             spaces='drive',
-                                            fields='nextPageToken, files(id, size, name, trashed, createdTime, modifiedTime, lastModifyingUser, shared,'
+                                            fields='nextPageToken, files(id, size, name, trashed, createdTime, '
+                                                   'modifiedTime, lastModifyingUser, shared,'
                                                    'sharedWithMeTime, sharingUser, mimeType)',
                                             pageToken=page_token).execute()
             for file in response.get('files', []):
@@ -153,13 +161,14 @@ class GDrive:
 
     def __get_selection_flist(self, service, search_query: str):
         result = list()
-        result.append(['File name', 'size', 'is_shared', 'is_trashed', 'CreatedTime', 'modifiedTime', 'lastModifyingUser',
-                       'SharedWithMeTime', 'SharingUser.emailAddress', 'sharingUser.permissionID', 'FileID', 'mimeType'])
+        result.append(['file name', 'size', 'is_shared', 'is_trashed', 'createdTime', 'modifiedTime', 'lastModifyingUser',
+                       'sharedWithMeTime', 'sharingUser.emailAddress', 'sharingUser.permissionID', 'fileID', 'mimeType'])
         page_token = None
         while True:
             response = service.files().list(q=search_query,
                                             spaces='drive',
-                                            fields='nextPageToken, files(id, size, name, trashed, createdTime, modifiedTime, lastModifyingUser, shared,'
+                                            fields='nextPageToken, files(id, size, name, trashed, createdTime, '
+                                                   'modifiedTime, lastModifyingUser, shared,'
                                                    'sharedWithMeTime, sharingUser, mimeType)',
                                             pageToken=page_token).execute()
             for file in response.get('files', []):
@@ -172,6 +181,7 @@ class GDrive:
         return result
 
     def __file_download(self, service, file_id, file_name, mimetype):
+        Path('./extract').mkdir(parents=True, exist_ok=True)
 
         dic_mimetype = {
             'application/vnd.google-apps.document': 'application/vnd.openxmlformats-officedocument.wordprocessingml.document',

@@ -1,4 +1,5 @@
-import os, sys
+import os
+import sys
 from API_GoogleCloud import GDrive
 from termcolor import colored
 from pyfiglet import Figlet
@@ -80,74 +81,14 @@ def show_file_list(file_list):
     :param file_list:
     :return:
     """
-    # columns = file_list[0][1:]
+    columns = ["num"] + file_list[0]
+    files = file_list[1:]
     print()
     print("======DRIVE_FILE_LIST======")
-    print("FILE_COUNT:", len(file_list) - 1)
-    # print("%-7s" % "Number"
-    #       + "%-60s" % "| %s" % columns[0]
-    #       + "%-10s" % "| %s" % columns[1]
-    #       + "%-10s" % "| %s" % columns[2]
-    #       + "%-10s" % "| %s" % columns[3])
-
-    for cnt, file in enumerate(file_list):
-        # if file[1] == "TRUE":
-        #     file[1] = "Shared"
-        # else:
-        #     file[2] = "Non-Shared"
-        #
-        # if file[3] == "TRUE":
-        #     file[3] = "Deleted"
-        # else:
-        #     file[3] = "Live"
-
-        print(f"{cnt:>5} | {file[0]:<60} | {str(file[1]):^5} | {str(file[2]):^5} | {str(file[3]):^5} | {str(file[4]):^10} | {str(file[5]):^10}")
-
-
-# def search_file_list(file_list):
-#     word = input("Keyword: ")
-#     cnt = 0
-#     for i in file_list:
-#         if word in i[1]:
-#             cnt += 1
-#             if cnt == 1:
-#                 print()
-#                 print('=======FIND COMPLETE=======')
-#             print(i[1])
-#     print()
-#     print("Total:", cnt)
-
-
-# def search_with_keyword():
-#     print()
-#     keyword = input("Input your Keyword: ")
-#     return keyword
-
-# def search_with_period():
-#     period = []
-#     print()
-#     keyword = input("Input your Keyword: ")
-#     print()
-#     print("###########################")
-#     print("###### E.X.A.M.P.L.E ######")
-#     print("##  2021-06-04T00:00:00  ##")
-#     print("###########################")
-#     print()
-#     period.append(input("Input the Start Time Point: "))
-#     period.append(input("Input the End Time Point: "))
-#     return keyword, period
-
-# def search_type():
-#     print()
-#     print("###########################")
-#     print("######### M.E.N.U #########")
-#     print("###########################")
-#     print("#    1. Period            #")
-#     print("#    2. Keyword           #")
-#     print()
-#
-#     num = int(input("Select Menu: "))
-#     return num
+    print("FILE_COUNT:", len(files))
+    print(f"{columns[0]:>5} | {columns[1]:<60} | {columns[2]:^10} | {columns[3]:^10} | {columns[4]:^10} | {columns[5]:^20} | {columns[6]:^20}")
+    for cnt, file in enumerate(files, start = 1):
+        print(f"{cnt:>5} | {file[0]:<60} | {str(file[1]):^10} | {str(file[2]):^10} | {str(file[3]):^10} | {str(file[4]):^20} | {str(file[5]):^20}")
 
 
 def download_item(file_list, dl_item, dl_path):

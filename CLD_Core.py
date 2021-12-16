@@ -1,6 +1,6 @@
 # Ver 0.1.1 : 2021.10.18
 # Ver 0.2.1 : 2021.10.19 / input 분리 적기엔 너무 많이 수정해버렸네
-# testestsetsetstet
+
 import display as DIS
 from API_GoogleCloud import GDrive
 from output_csv import CSVExport
@@ -28,13 +28,11 @@ if cloud == 1:
         SCOPES = ['https://www.googleapis.com/auth/drive']
         drive = GDrive(TOKEN_FILE, PORT, SCOPES)
         tmp_csv = drive.run()
-        cnt = 0
 
         # make csv file
-        for info in tmp_csv:
+        for cnt, info in enumerate(tmp_csv, start=1):
             export = CSVExport("GDrive_search_" + str(cnt))
             export.input_dict(info)
-            cnt += 1
         print(" [*] Export csv!")
     except Exception as e:
-        print(" [-] Login Failed; ", e)
+        print(" [-] Login failed; ", e)
