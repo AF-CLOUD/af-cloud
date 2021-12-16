@@ -43,10 +43,10 @@ class GDrive:
             DIS.show_file_list(file_list)
             # download file
             print("\n"
-                  "If you want to download file, enter the number of the files you want by dividing it into spacing.\n"
-                  "If you don't want, please click enter\n"
-                  "download input example: 1~4 19 10\n")
-            download_number_str = input("Input your number: ")
+                  "To download file(s), put file numbers separated by space.\n"
+                  "If you don't want to download file(s), hit enter.\n"
+                  "Example input: 1~4 19 10\n")
+            download_number_str = input("Put file numbers: ")
             if download_number_str:
                 download_number = []
                 for s in download_number_str.split(" "):
