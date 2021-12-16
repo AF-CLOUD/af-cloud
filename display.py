@@ -1,8 +1,10 @@
 import os
 import sys
-from API_GoogleCloud import GDrive
 from termcolor import colored
 from pyfiglet import Figlet
+import tabulate
+
+tabulate.WIDE_CHARS_MODE = True
 
 
 def start_display():
@@ -86,9 +88,16 @@ def show_file_list(file_list):
     print()
     print("======DRIVE_FILE_LIST======")
     print("FILE_COUNT:", len(files))
-    print(f"{columns[0]:>5} | {columns[1]:<60} | {columns[2]:^10} | {columns[3]:^10} | {columns[4]:^10} | {columns[5]:^20} | {columns[6]:^20}")
-    for cnt, file in enumerate(files, start = 1):
-        print(f"{cnt:>5} | {file[0]:<60} | {str(file[1]):^10} | {str(file[2]):^10} | {str(file[3]):^10} | {str(file[4]):^20} | {str(file[5]):^20}")
+
+    # print(file_list)
+    # print(type(file_list))
+    newlist = list()
+    for f in file_list:
+        if len(f[0]) >= 20:
+            f[0] = f[0][:20] + '....'
+        newlist.append((f[:6]))
+
+    print(tabulate.tabulate(newlist, headers="firstrow", tablefmt='github', showindex=True))
 
 
 def download_item(file_list, dl_item, dl_path):
