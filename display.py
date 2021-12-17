@@ -10,11 +10,10 @@ tabulate.WIDE_CHARS_MODE = True
 def start_display():
     os.system('cls')
     f = Figlet(font='big')
-    print(colored(f.renderText('AF'), 'red'))
-    f = Figlet(font='big')
-    print(colored(f.renderText('CLOUD'), 'yellow'))
-    # f = Figlet(font='banner')
-    # print(colored(f.renderText('CLOUD'), 'red'))
+    print(colored(f.renderText('Police - Lab 2.0'), 'red'))
+    f = Figlet(font='digital')
+    print(colored(f.renderText('Research on Data Acquisition and Analysis for Counter Anti-Forensics'), 'yellow'))
+
 
 
 def show_driveinfo(driveinfo):
