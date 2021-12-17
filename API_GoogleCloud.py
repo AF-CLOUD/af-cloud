@@ -138,7 +138,7 @@ class GDrive:
     def __get_flist(self, service):
         result = list()
         result.append(['file name', 'size', 'is_shared', 'is_trashed', 'createdTime','modifiedTime', 'owners', 'lastModifyingUser', 'version', 'FileExtension',
-                       'modifiedByMeTime',  'md5Checksum', 'sharedWithMeTime','sharingUser.emailAddress', 'sharingUser.'sharingUser.displayName',
+                       'modifiedByMeTime',  'md5Checksum', 'sharedWithMeTime','sharingUser.emailAddress', 'sharingUser.displayName',
                        'imageMediaMetadata.time', 'imageMediaMetadata.cameraMake','imageMediaMetadata.location', 
                        'fileID', 'mimeType'])
         page_token = None
