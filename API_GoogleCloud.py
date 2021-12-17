@@ -138,7 +138,7 @@ class GDrive:
     def __get_flist(self, service):
         result = list()
         result.append(['file name', 'size', 'is_shared', 'is_trashed', 'createdTime','modifiedTime', 'owners', 'lastModifyingUser', 'version', 'FileExtension',
-                       'modifiedByMeTime',  'md5Checksum', 'sharedWithMeTime','sharingUser.emailAddress', 'sharingUser.permissionID',
+                       'modifiedByMeTime',  'md5Checksum', 'sharedWithMeTime','sharingUser.emailAddress', 'sharingUser.'sharingUser.displayName',
                        'imageMediaMetadata.time', 'imageMediaMetadata.cameraMake','imageMediaMetadata.location', 
                        'fileID', 'mimeType'])
         page_token = None
@@ -159,7 +159,7 @@ class GDrive:
     def __get_selection_flist(self, service, search_query: str):
         result = list()
         result.append(['file name', 'size', 'is_shared', 'is_trashed', 'createdTime', 'modifiedTime', 'owners', 'lastModifyingUser', 'version', 'FileExtension',
-                       'modifiedByMeTime',  'md5Checksum', 'sharedWithMeTime', 'sharingUser.emailAddress', 'sharingUser.permissionID',
+                       'modifiedByMeTime',  'md5Checksum', 'sharedWithMeTime', 'sharingUser.emailAddress', 'sharingUser.displayName',
                        'imageMediaMetadata.time', 'imageMediaMetadata.cameraMake', 'imageMediaMetadata.location',
                        'fileID', 'mimeType'])
         page_token = None
@@ -189,7 +189,7 @@ class GDrive:
                     file.get('lastModifyingUser').get('displayName'), file.get('version'),
                     file.get('fileExtension'), file.get('modifiedByMeTime'),
                     file.get('md5Checksum'), file.get('SharedWithMeTime'),
-                    file.get('sharingUser').get('emailAddress'), file.get('sharingUser').get('permissionId'),
+                    file.get('sharingUser').get('emailAddress'), file.get('sharingUser').get('displayName'),
                     file.get('imageMediaMetadata').get('time'), file.get('imageMediaMetadata').get('cameraMake'),
                     location,
                     file.get('id'), file.get('mimeType')]
@@ -199,7 +199,7 @@ class GDrive:
                     file.get('lastModifyingUser').get('displayName'), file.get('version'),
                     file.get('fileExtension'), file.get('modifiedByMeTime'),
                     file.get('md5Checksum'), file.get('sharedWithMeTime'),
-                    file.get('sharingUser').get('emailAddress'), file.get('sharingUser').get('permissionId'),
+                    file.get('sharingUser').get('emailAddress'), file.get('sharingUser').get('displayName'),
                     None, None, None,
                     file.get('id'), file.get('mimeType')]
         elif file.get('imageMediaMetadata'):
