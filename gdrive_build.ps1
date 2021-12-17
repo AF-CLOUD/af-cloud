@@ -7,5 +7,6 @@ python -m venv ./venv
 .\venv\Scripts\pip install --upgrade pip
 .\venv\Scripts\pip install termcolor
 .\venv\Scripts\pip install pyfiglet
+.\venv\Scripts\pip install tabulate[widechars]
 .\venv\Scripts\pip install --upgrade google-api-python-client google-auth-httplib2 google-auth-oauthlib
 
