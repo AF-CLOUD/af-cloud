@@ -92,7 +92,8 @@ def show_file_list(file_list):
     # print(file_list)
     # print(type(file_list))
     newlist = list()
-    for f in file_list:
+    tmp_list = file_list()
+    for f in tmp_list:
         if len(f[0]) >= 20:
             f[0] = f[0][:20] + '....'
         newlist.append((f[:6]))
