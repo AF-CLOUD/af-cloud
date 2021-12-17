@@ -91,16 +91,18 @@ def show_file_list(file_list):
     # print(file_list)
     # print(type(file_list))
     newlist = list()
-    for f in file_list:
+    for i, f in enumerate(file_list):
+        if i == 0:
+            i = 'index'
         if len(f[0]) >= 20:
             tmp = f[0]
             f[0] = f[0][:20] + '....'
-            newlist.append((f[:6]))
+            newlist.append((i, f[0], f[1], f[2], f[3], f[4], f[5]))
             f[0] = tmp
         else:
-            newlist.append((f[:6]))
+            newlist.append((i, f[0], f[1], f[2], f[3], f[4], f[5]))
 
-    print(tabulate.tabulate(newlist, headers="firstrow", tablefmt='github', showindex=True))
+    print(tabulate.tabulate(newlist, headers="firstrow", tablefmt='github', showindex=False))
 
 
 def download_item(file_list, dl_item, dl_path):
