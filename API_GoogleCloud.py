@@ -191,7 +191,7 @@ class GDrive:
                     file.get('createdTime'), file.get('modifiedTime'), file.get('owners')[0].get('displayName'),
                     file.get('lastModifyingUser').get('displayName'), file.get('version'),
                     file.get('fileExtension'), file.get('modifiedByMeTime'),
-                    file.get('md5Checksum'), file.get('SharedWithMeTime'),
+                    file.get('md5Checksum'), file.get('sharedWithMeTime'),
                     file.get('sharingUser').get('emailAddress'), file.get('sharingUser').get('permissionId'),
                     None, None,
                     file.get('id'), file.get('mimeType')]
