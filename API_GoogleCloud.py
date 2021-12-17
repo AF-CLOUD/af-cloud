@@ -158,9 +158,9 @@ class GDrive:
 
     def __get_selection_flist(self, service, search_query: str):
         result = list()
-        result.append(['file name', 'size', 'is_shared', 'is_trashed', 'createdTime','modifiedTime', 'owners', 'lastModifyingUser', 'version', 'FileExtension',
-                       'modifiedByMeTime',  'md5Checksum', 'sharedWithMeTime','sharingUser.emailAddress', 'sharingUser.permissionID',
-                       'imageMediaMetadata.time', 'imageMediaMetadata.cameraMake','imageMediaMetadata.location', 
+        result.append(['file name', 'size', 'is_shared', 'is_trashed', 'createdTime', 'modifiedTime', 'owners', 'lastModifyingUser', 'version', 'FileExtension',
+                       'modifiedByMeTime',  'md5Checksum', 'sharedWithMeTime', 'sharingUser.emailAddress', 'sharingUser.permissionID',
+                       'imageMediaMetadata.time', 'imageMediaMetadata.cameraMake', 'imageMediaMetadata.location',
                        'fileID', 'mimeType'])
         page_token = None
         while True:
@@ -179,13 +179,19 @@ class GDrive:
 
     def __get_metadata(self, file):
         if file.get('sharingUser') and file.get('imageMediaMetadata'):
+            if file.get('imageMediaMetadata').get('location') == None:
+                location = None
+            else:
+                location = 'latitude: ' + str(round(file.get('imageMediaMetadata').get('location').get('latitude'), 4)) \
+                           + ', longitude: ' + str(round(file.get('imageMediaMetadata').get('location').get('longitude'), 4))
             return [file.get('name'), file.get('size'), file.get('shared'), file.get('trashed'),
                     file.get('createdTime'), file.get('modifiedTime'), file.get('owners')[0].get('displayName'),
                     file.get('lastModifyingUser').get('displayName'), file.get('version'),
                     file.get('fileExtension'), file.get('modifiedByMeTime'),
                     file.get('md5Checksum'), file.get('SharedWithMeTime'),
                     file.get('sharingUser').get('emailAddress'), file.get('sharingUser').get('permissionId'),
-                    file.get('imageMediaMetadata').get('time'), file.get('imageMediaMetadata').get('cameraMake'),str(file.get('imageMediaMetadata').get('location')),
+                    file.get('imageMediaMetadata').get('time'), file.get('imageMediaMetadata').get('cameraMake'),
+                    location,
                     file.get('id'), file.get('mimeType')]
         elif file.get('sharingUser'):
             return [file.get('name'), file.get('size'), file.get('shared'), file.get('trashed'),
@@ -194,16 +200,21 @@ class GDrive:
                     file.get('fileExtension'), file.get('modifiedByMeTime'),
                     file.get('md5Checksum'), file.get('sharedWithMeTime'),
                     file.get('sharingUser').get('emailAddress'), file.get('sharingUser').get('permissionId'),
-                    None, None,None,
+                    None, None, None,
                     file.get('id'), file.get('mimeType')]
         elif file.get('imageMediaMetadata'):
+            if file.get('imageMediaMetadata').get('location') == None:
+                location = None
+            else:
+                location = 'latitude: ' + str(round(file.get('imageMediaMetadata').get('location').get('latitude'), 4)) \
+                           + ', longitude: ' + str(round(file.get('imageMediaMetadata').get('location').get('longitude'), 4))
             return [file.get('name'), file.get('size'), file.get('shared'), file.get('trashed'),
                     file.get('createdTime'), file.get('modifiedTime'), file.get('owners')[0].get('displayName'),
                     file.get('lastModifyingUser').get('displayName'), file.get('version'),
                     file.get('fileExtension'), file.get('modifiedByMeTime'),
                     file.get('md5Checksum'), file.get('SharedWithMeTime'),
                     None, None,
-                    file.get('imageMediaMetadata').get('time'), file.get('imageMediaMetadata').get('cameraMake'),str(file.get('imageMediaMetadata').get('location')),
+                    file.get('imageMediaMetadata').get('time'), file.get('imageMediaMetadata').get('cameraMake'), location,
                     file.get('id'), file.get('mimeType')]
         else:
             return [file.get('name'), file.get('size'), file.get('shared'), file.get('trashed'),

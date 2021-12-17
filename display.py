@@ -91,11 +91,14 @@ def show_file_list(file_list):
     # print(file_list)
     # print(type(file_list))
     newlist = list()
-    tmp_list = file_list()
-    for f in tmp_list:
+    for f in file_list:
         if len(f[0]) >= 20:
+            tmp = f[0]
             f[0] = f[0][:20] + '....'
-        newlist.append((f[:6]))
+            newlist.append((f[:6]))
+            f[0] = tmp
+        else:
+            newlist.append((f[:6]))
 
     print(tabulate.tabulate(newlist, headers="firstrow", tablefmt='github', showindex=True))
 
