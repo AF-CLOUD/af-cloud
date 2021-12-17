@@ -139,7 +139,7 @@ class GDrive:
         result = list()
         result.append(['file name', 'size', 'is_shared', 'is_trashed', 'createdTime','modifiedTime', 'owners', 'lastModifyingUser', 'version', 'FileExtension',
                        'modifiedByMeTime',  'md5Checksum', 'sharedWithMeTime','sharingUser.emailAddress', 'sharingUser.permissionID',
-                       'imageMediaMetadata.time', 'imageMediaMetadata.cameraMake',
+                       'imageMediaMetadata.time', 'imageMediaMetadata.cameraMake','imageMediaMetadata.location', 
                        'fileID', 'mimeType'])
         page_token = None
         while True:
@@ -158,9 +158,10 @@ class GDrive:
 
     def __get_selection_flist(self, service, search_query: str):
         result = list()
-        result.append(['file name', 'size', 'owners', 'lastModifyingUser', 'version', 'is_shared', 'is_trashed', 'createdTime','modifiedTime', 'FileExtension',
+        result.append(['file name', 'size', 'is_shared', 'is_trashed', 'createdTime','modifiedTime', 'owners', 'lastModifyingUser', 'version', 'FileExtension',
                        'modifiedByMeTime',  'md5Checksum', 'sharedWithMeTime','sharingUser.emailAddress', 'sharingUser.permissionID',
-                       'imageMediaMetadata.time', 'imageMediaMetadata.cameraMake', 'fileID', 'mimeType'])
+                       'imageMediaMetadata.time', 'imageMediaMetadata.cameraMake','imageMediaMetadata.location', 
+                       'fileID', 'mimeType'])
         page_token = None
         while True:
             response = service.files().list(q=search_query,
@@ -184,7 +185,7 @@ class GDrive:
                     file.get('fileExtension'), file.get('modifiedByMeTime'),
                     file.get('md5Checksum'), file.get('SharedWithMeTime'),
                     file.get('sharingUser').get('emailAddress'), file.get('sharingUser').get('permissionId'),
-                    file.get('imageMediaMetadata').get('time'), file.get('imageMediaMetadata').get('cameraMake'),
+                    file.get('imageMediaMetadata').get('time'), file.get('imageMediaMetadata').get('cameraMake'),str(file.get('imageMediaMetadata').get('location')),
                     file.get('id'), file.get('mimeType')]
         elif file.get('sharingUser'):
             return [file.get('name'), file.get('size'), file.get('shared'), file.get('trashed'),
@@ -193,7 +194,7 @@ class GDrive:
                     file.get('fileExtension'), file.get('modifiedByMeTime'),
                     file.get('md5Checksum'), file.get('sharedWithMeTime'),
                     file.get('sharingUser').get('emailAddress'), file.get('sharingUser').get('permissionId'),
-                    None, None,
+                    None, None,None,
                     file.get('id'), file.get('mimeType')]
         elif file.get('imageMediaMetadata'):
             return [file.get('name'), file.get('size'), file.get('shared'), file.get('trashed'),
@@ -202,7 +203,7 @@ class GDrive:
                     file.get('fileExtension'), file.get('modifiedByMeTime'),
                     file.get('md5Checksum'), file.get('SharedWithMeTime'),
                     None, None,
-                    file.get('imageMediaMetadata').get('time'), file.get('imageMediaMetadata').get('cameraMake'),
+                    file.get('imageMediaMetadata').get('time'), file.get('imageMediaMetadata').get('cameraMake'),str(file.get('imageMediaMetadata').get('location')),
                     file.get('id'), file.get('mimeType')]
         else:
             return [file.get('name'), file.get('size'), file.get('shared'), file.get('trashed'),
@@ -210,7 +211,7 @@ class GDrive:
                     file.get('lastModifyingUser').get('displayName'), file.get('version'),
                     file.get('fileExtension'), file.get('modifiedByMeTime'),
                     file.get('md5Checksum'), file.get('SharedWithMeTime'),
-                    None, None, None, None,
+                    None, None, None, None, None,
                     file.get('id'), file.get('mimeType')]
 
     def __file_download(self, service, file_id, file_name, mimetype):
