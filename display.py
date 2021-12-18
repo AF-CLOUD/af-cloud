@@ -82,27 +82,21 @@ def show_file_list(file_list):
     :param file_list:
     :return:
     """
-    columns = ["num"] + file_list[0]
-    files = file_list[1:]
-    print()
-    print("======DRIVE_FILE_LIST======")
-    print("FILE_COUNT:", len(files))
-
-    # print(file_list)
-    # print(type(file_list))
-    newlist = list()
-    for i, f in enumerate(file_list):
-        if i == 0:
-            i = 'index'
+    new_list = list()
+    for f in file_list:
         if len(f[0]) >= 20:
             tmp = f[0]
             f[0] = f[0][:20] + '....'
-            newlist.append((i, f[0], f[1], f[2], f[3], f[4], f[5]))
+            new_list.append((f[:6]))
             f[0] = tmp
         else:
-            newlist.append((i, f[0], f[1], f[2], f[3], f[4], f[5]))
+            new_list.append((f[:6]))
 
-    print(tabulate.tabulate(newlist, headers="firstrow", tablefmt='github', showindex=False))
+    file_count = len(file_list)
+    print()
+    print("======DRIVE_FILE_LIST======")
+    print("FILE_COUNT:", file_count - 1)
+    print(tabulate.tabulate(new_list, headers="firstrow", tablefmt='github', showindex=range(1, file_count)))
 
 
 def download_item(file_list, dl_item, dl_path):
