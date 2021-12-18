@@ -60,7 +60,9 @@ class GDrive:
                 for i in download_number:
                     try:
                         down_start = time.time()
-                        self.__file_download(service, file_list[i][10], file_list[i][0], file_list[i][11])
+                        list_len = len(file_list[i]) -1
+                        # fileid, mimetype, filename
+                        self.__file_download(service, file_list[i][list_len-1], file_list[i][0], file_list[i][list_len])
                         down_end = time.time()
                         print("%s | Download time(s) : " % file_list[i][1], down_end - down_start)
                     except Exception as e:
