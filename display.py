@@ -10,8 +10,8 @@ tabulate.WIDE_CHARS_MODE = True
 def start_display():
     os.system('cls')
     f = Figlet(font='big')
-    print(colored(f.renderText('< FACT >\n                        - CLOUD'), 'red'))
-    print(colored("[Police-Lab 2.0] Research on Data Acquisition and Analysis for Counter Anti-Forensics\n\n", 'yellow'))
+    print(colored(f.renderText('< FACT >\n                        - CLOUD'), 'blue'))
+    print(colored("[Police-Lab 2.0] Research on Data Acquisition and Analysis for Counter Anti-Forensics\n\n", 'blue'))
 
 
 
