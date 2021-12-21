@@ -180,6 +180,11 @@ class GDrive:
         return result
 
     def __get_metadata(self, file):
+        if file.get('lastModifyingUser'):
+            last_modifying_user = file.get('lastModifyingUser').get('displayName')
+        else:
+            last_modifying_user = None
+
         if file.get('sharingUser') and file.get('imageMediaMetadata'):
             if file.get('imageMediaMetadata').get('location') == None:
                 location = None
@@ -188,17 +193,16 @@ class GDrive:
                            + ', longitude: ' + str(round(file.get('imageMediaMetadata').get('location').get('longitude'), 4))
             return [file.get('name'), file.get('size'), file.get('shared'), file.get('trashed'),
                     file.get('createdTime'), file.get('modifiedTime'), file.get('owners')[0].get('displayName'),
-                    file.get('lastModifyingUser').get('displayName'), file.get('version'),
+                    last_modifying_user, file.get('version'),
                     file.get('fileExtension'), file.get('modifiedByMeTime'),
                     file.get('md5Checksum'), file.get('SharedWithMeTime'),
                     file.get('sharingUser').get('emailAddress'), file.get('sharingUser').get('displayName'),
-                    file.get('imageMediaMetadata').get('time'), file.get('imageMediaMetadata').get('cameraMake'),
-                    location,
+                    file.get('imageMediaMetadata').get('time'), file.get('imageMediaMetadata').get('cameraMake'), location,
                     file.get('id'), file.get('mimeType')]
         elif file.get('sharingUser'):
             return [file.get('name'), file.get('size'), file.get('shared'), file.get('trashed'),
                     file.get('createdTime'), file.get('modifiedTime'), file.get('owners')[0].get('displayName'),
-                    file.get('lastModifyingUser').get('displayName'), file.get('version'),
+                    last_modifying_user, file.get('version'),
                     file.get('fileExtension'), file.get('modifiedByMeTime'),
                     file.get('md5Checksum'), file.get('sharedWithMeTime'),
                     file.get('sharingUser').get('emailAddress'), file.get('sharingUser').get('displayName'),
@@ -212,7 +216,7 @@ class GDrive:
                            + ', longitude: ' + str(round(file.get('imageMediaMetadata').get('location').get('longitude'), 4))
             return [file.get('name'), file.get('size'), file.get('shared'), file.get('trashed'),
                     file.get('createdTime'), file.get('modifiedTime'), file.get('owners')[0].get('displayName'),
-                    file.get('lastModifyingUser').get('displayName'), file.get('version'),
+                    last_modifying_user, file.get('version'),
                     file.get('fileExtension'), file.get('modifiedByMeTime'),
                     file.get('md5Checksum'), file.get('SharedWithMeTime'),
                     None, None,
@@ -221,7 +225,7 @@ class GDrive:
         else:
             return [file.get('name'), file.get('size'), file.get('shared'), file.get('trashed'),
                     file.get('createdTime'), file.get('modifiedTime'), file.get('owners')[0].get('displayName'),
-                    file.get('lastModifyingUser').get('displayName'), file.get('version'),
+                    last_modifying_user, file.get('version'),
                     file.get('fileExtension'), file.get('modifiedByMeTime'),
                     file.get('md5Checksum'), file.get('SharedWithMeTime'),
                     None, None, None, None, None,
