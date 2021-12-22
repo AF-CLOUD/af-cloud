@@ -10,9 +10,9 @@ class Export:
         self.file_path = path
         self.file_name = name
         self.file_pointer = None
+        Path(self.file_path).mkdir(parents=True, exist_ok=True)
 
     def input_dict(self, file_list):
-        Path(self.file_path).mkdir(parents=True, exist_ok=True)
         self.__open_file()
 
         column = file_list[0]
@@ -32,5 +32,6 @@ class Export:
 
     def __close_file(self):
         self.file_pointer.close()
+
 
 

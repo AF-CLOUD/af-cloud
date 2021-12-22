@@ -6,13 +6,13 @@
     'TITLE'             : [Police-Lab 2.0] Research on Data Acquisition and Analysis for Counter Anti-Forensics\n
     'TEAM'              : Korea Univ. DFRC\n
     'VERSION'           : \n
-    'RELEASE-DATE'      : 2021-\n
+    'RELEASE-DATE'      : 2021-12-22\n
 
 --------------------------------------------
 
 Member
 ===========
-
+    Jieon Kim. Sumin Bang. Yeseong Hwang. Jihyeok Yang. Seungah Kang. Siyoon Kim.
 
 """
 import os
