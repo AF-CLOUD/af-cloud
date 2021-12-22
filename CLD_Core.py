@@ -30,8 +30,10 @@ if cloud == 1:
         tmp_csv = drive.run()
 
         # make csv file
+        export_path = os.path.abspath(os.path.dirname(__file__)) + os.sep + 'export'
+        Path(export_path).mkdir(parents=True, exist_ok=True)
         for cnt, info in enumerate(tmp_csv, start=1):
-            export = CSVExport("GDrive_search_" + str(cnt))
+            export = CSVExport(export_path + os.sep + "GDrive_search_" + str(cnt))
             export.input_dict(info)
         print(" [*] Export csv!")
     except Exception as e:
