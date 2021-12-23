@@ -253,7 +253,7 @@ class GDrive:
         if 'application/vnd.google-apps.' in mimetype:
             request = service.files().export_media(fileId=file_id, mimeType=dic_mimetype[mimetype])
             fh = io.BytesIO()
-            downloader = MediaIoBaseDownload(fh, request)
+            downloader = MediaIoBaseDownload(fh, request, chunksize=1024*1024*200)
             done = False
             while done is False:
                 status, done = downloader.next_chunk()
@@ -265,7 +265,7 @@ class GDrive:
         else:
             request = service.files().get_media(fileId=file_id)
             fh = io.BytesIO()
-            downloader = MediaIoBaseDownload(fh, request)
+            downloader = MediaIoBaseDownload(fh, request, chunksize=1024*1024*200)
             # with open('./' + file_id, 'wb') as f:
             #     f.write(downloader)
             done = False
