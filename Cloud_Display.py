@@ -66,7 +66,7 @@ def show_file_list(file_list):
     print()
     print("======DRIVE_FILE_LIST======")
     print("FILE_COUNT:", file_count - 1)
-    print(tabulate.tabulate(new_list, headers="firstrow", tablefmt='github', showindex=range(1, file_count)))
+    print(tabulate.tabulate(new_list, headers="firstrow", tablefmt='github', showindex=range(1, file_count), numalign="left"))
 
 
 def show_credential_info(info):
