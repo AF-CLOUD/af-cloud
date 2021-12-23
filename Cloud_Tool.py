@@ -23,9 +23,9 @@ from Cloud_Output import Export
 
 def Tool_Argument():
     parser = argparse.ArgumentParser()
-    parser.add_argument("-c", action="store", dest="cred", type=str, default=os.path.abspath(os.path.dirname(__file__)) + os.sep + "credentials.json", required=False, help="credential file path")
-    parser.add_argument("-e", action="store", dest="export", type=str, default=os.path.abspath(os.path.dirname(__file__)) + os.sep + "export", required=False, help="csv export path")
-    parser.add_argument("-d", action="store", dest="download", type=str, default=os.path.abspath(os.path.dirname(__file__)) + os.sep + "extract", required=False, help="file download path")
+    parser.add_argument("-c", action="store", dest="cred", type=str, default= "./credentials.json", required=False, help="credential file path")
+    parser.add_argument("-e", action="store", dest="export", type=str, default= "./export", required=False, help="csv export path")
+    parser.add_argument("-d", action="store", dest="download", type=str, default= "./extract", required=False, help="file download path")
     args = parser.parse_args()
     return args
 
