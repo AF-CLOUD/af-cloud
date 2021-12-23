@@ -2,6 +2,8 @@ import os
 import sys
 from termcolor import colored
 from pyfiglet import Figlet
+import pytz
+import dateutil.parser
 import tabulate
 
 tabulate.WIDE_CHARS_MODE = True
@@ -42,8 +44,16 @@ def select_menu():
 
 
 def show_file_list(file_list):
+    local_timezone = pytz.timezone('Asia/Seoul')
     new_list = list()
+    cnt = 0
     for f in file_list:
+        if cnt != 0:
+            created_date = dateutil.parser.parse(f[4])
+            modified_date = dateutil.parser.parse(f[5])
+            f[4] = created_date.replace(tzinfo=pytz.utc).astimezone(local_timezone).strftime("%Y-%m-%d %H:%M:%S")
+            f[5] = modified_date.replace(tzinfo=pytz.utc).astimezone(local_timezone).strftime("%Y-%m-%d %H:%M:%S")
+        cnt += 1
         if len(f[0]) >= 20:
             tmp = f[0]
             f[0] = f[0][:20] + '....'

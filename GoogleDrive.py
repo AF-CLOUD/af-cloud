@@ -101,8 +101,13 @@ class GDrive:
             # Set period
             search_period = g_input.get_m_period()
             if search_period[0] and search_period[1]:
-                s_period = '\'' + search_period[0] + "T00:00:00" + '\''
-                e_period = '\'' + search_period[1] + "T23:59:59" + '\''
+                if search_period[0] != '1970-01-01':
+                    re_start_time = datetime.datetime.strptime(search_period[0], "%Y-%m-%d") - datetime.timedelta(days=1)
+                    re_start_time = re_start_time.strftime("%Y-%m-%d")
+                else:
+                    re_start_time = search_period[0]
+                s_period = '\'' + re_start_time + "T15:00:00" + '\''
+                e_period = '\'' + search_period[1] + "T14:59:59" + '\''
                 search_query = "".join([search_query, " and ", "modifiedTime > %s" % s_period,
                                                       " and ", "modifiedTime < %s" % e_period])
             g_input.show_input()
@@ -140,7 +145,7 @@ class GDrive:
 
     def __get_flist(self, service):
         result = list()
-        result.append(['file name', 'size', 'is_shared', 'is_trashed', 'createdTime','modifiedTime', 'owners', 'lastModifyingUser', 'version', 'FileExtension',
+        result.append(['file name', 'size', 'is_shared', 'is_trashed', 'createdTime(+09:00)','createdTime(+09:00)', 'owners', 'lastModifyingUser', 'version', 'FileExtension',
                        'modifiedByMeTime',  'md5Checksum', 'sharedWithMeTime','sharingUser.emailAddress', 'sharingUser.displayName',
                        'imageMediaMetadata.time', 'imageMediaMetadata.cameraMake','imageMediaMetadata.location', 
                        'fileID', 'mimeType'])
