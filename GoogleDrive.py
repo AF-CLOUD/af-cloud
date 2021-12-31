@@ -145,7 +145,7 @@ class GDrive:
 
     def __get_flist(self, service):
         result = list()
-        result.append(['file name', 'size', 'is_shared', 'is_trashed', 'createdTime(+09:00)','createdTime(+09:00)', 'owners', 'lastModifyingUser', 'version', 'FileExtension',
+        result.append(['file name', 'size', 'is_shared', 'is_trashed', 'createdTime(+09:00)', 'modifiedTime(+09:00)', 'owners', 'lastModifyingUser', 'version', 'FileExtension',
                        'modifiedByMeTime',  'md5Checksum', 'sharedWithMeTime','sharingUser.emailAddress', 'sharingUser.displayName',
                        'imageMediaMetadata.time', 'imageMediaMetadata.cameraMake','imageMediaMetadata.location', 
                        'fileID', 'mimeType'])
@@ -166,7 +166,7 @@ class GDrive:
 
     def __get_selection_flist(self, service, search_query: str):
         result = list()
-        result.append(['file name', 'size', 'is_shared', 'is_trashed', 'createdTime', 'modifiedTime', 'owners', 'lastModifyingUser', 'version', 'FileExtension',
+        result.append(['file name', 'size', 'is_shared', 'is_trashed', 'createdTime(+09:00)', 'modifiedTime(+09:00)', 'owners', 'lastModifyingUser', 'version', 'FileExtension',
                        'modifiedByMeTime',  'md5Checksum', 'sharedWithMeTime', 'sharingUser.emailAddress', 'sharingUser.displayName',
                        'imageMediaMetadata.time', 'imageMediaMetadata.cameraMake', 'imageMediaMetadata.location',
                        'fileID', 'mimeType'])
