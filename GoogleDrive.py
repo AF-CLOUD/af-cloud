@@ -1,4 +1,4 @@
-# Coding by YES
+# Dev of YES
 # Reference: Google
 # Ver 1.0: Get Filelist + Searching Option(keyword, modified period)
 
@@ -135,6 +135,7 @@ class GDrive:
             else:
                 flow = InstalledAppFlow.from_client_secrets_file(self.token_file, scopes=self.scopes)
                 creds = flow.run_local_server(port=self.port)
+                self.token_file = creds.token
             # Save the credentials for the next run
             with open('token.json', 'w') as token:
                 token.write(creds.to_json())
@@ -145,9 +146,9 @@ class GDrive:
 
     def __get_flist(self, service):
         result = list()
-        result.append(['file name', 'size', 'is_shared', 'is_trashed', 'createdTime(+09:00)', 'modifiedTime(+09:00)', 'owners', 'lastModifyingUser', 'version', 'FileExtension',
+        result.append(['file name', 'size', 'is_shared', 'is_trashed', 'createdTime','modifiedTime', 'owners', 'lastModifyingUser', 'version', 'FileExtension',
                        'modifiedByMeTime',  'md5Checksum', 'sharedWithMeTime','sharingUser.emailAddress', 'sharingUser.displayName',
-                       'imageMediaMetadata.time', 'imageMediaMetadata.cameraMake','imageMediaMetadata.location', 
+                       'imageMediaMetadata.time', 'imageMediaMetadata.cameraMake','imageMediaMetadata.location', 'hasThumbnail',
                        'fileID', 'mimeType'])
         page_token = None
         while True:
@@ -155,7 +156,7 @@ class GDrive:
                                             spaces='drive',
                                             fields='nextPageToken, files(id, size, name, owners, version, trashed, createdTime, '
                                                    'modifiedTime, fileExtension, modifiedByMeTime, md5Checksum, lastModifyingUser, shared,'
-                                                   'sharedWithMeTime, sharingUser, imageMediaMetadata, mimeType)',
+                                                   'sharedWithMeTime, sharingUser, imageMediaMetadata, hasThumbnail, thumbnailLink, mimeType)',
                                             pageToken=page_token).execute()
             for file in response.get('files', []):
                 result.append(self.__get_metadata(file))
@@ -168,7 +169,7 @@ class GDrive:
         result = list()
         result.append(['file name', 'size', 'is_shared', 'is_trashed', 'createdTime(+09:00)', 'modifiedTime(+09:00)', 'owners', 'lastModifyingUser', 'version', 'FileExtension',
                        'modifiedByMeTime',  'md5Checksum', 'sharedWithMeTime', 'sharingUser.emailAddress', 'sharingUser.displayName',
-                       'imageMediaMetadata.time', 'imageMediaMetadata.cameraMake', 'imageMediaMetadata.location',
+                       'imageMediaMetadata.time', 'imageMediaMetadata.cameraMake', 'imageMediaMetadata.location', 'hasThumbnail',
                        'fileID', 'mimeType'])
         page_token = None
         while True:
@@ -176,7 +177,7 @@ class GDrive:
                                             spaces='drive',
                                             fields='nextPageToken, files(id, size, name, owners, version, trashed, createdTime, '
                                                    'modifiedTime, fileExtension, modifiedByMeTime, md5Checksum, lastModifyingUser, shared,'
-                                                   'sharedWithMeTime, sharingUser, imageMediaMetadata, mimeType)',
+                                                   'sharedWithMeTime, sharingUser, imageMediaMetadata, hasThumbnail, thumbnailLink, mimeType)',
                                             pageToken=page_token).execute()
             for file in response.get('files', []):
                 result.append(self.__get_metadata(file))
@@ -186,6 +187,22 @@ class GDrive:
         return result
 
     def __get_metadata(self, file):
+        if file.get('hasThumbnail'):
+            try:
+                # thumbnail_url = 'https://drive.google.com/thumbnail?sz=w240&id='
+                filename = file.get('name')
+                thumbnail_link = file.get('thumbnailLink')
+                access_token = '&access_token=' + self.token_value
+                private_url = 'lh3.googleusercontent.com'
+                if private_url not in thumbnail_link:
+                    thumbnail_link = thumbnail_link + access_token
+
+                thumbnail = requests.get(thumbnail_link).content
+
+                self.__thumbnail_download(thumbnail, filename)
+            except:
+                pass
+
         if file.get('lastModifyingUser'):
             last_modifying_user = file.get('lastModifyingUser').get('displayName')
         else:
@@ -196,15 +213,17 @@ class GDrive:
                 location = None
             else:
                 location = 'latitude: ' + str(round(file.get('imageMediaMetadata').get('location').get('latitude'), 4)) \
-                           + ', longitude: ' + str(round(file.get('imageMediaMetadata').get('location').get('longitude'), 4))
+                           + ', longitude: ' + str(
+                    round(file.get('imageMediaMetadata').get('location').get('longitude'), 4))
             return [file.get('name'), file.get('size'), file.get('shared'), file.get('trashed'),
                     file.get('createdTime'), file.get('modifiedTime'), file.get('owners')[0].get('displayName'),
                     last_modifying_user, file.get('version'),
                     file.get('fileExtension'), file.get('modifiedByMeTime'),
                     file.get('md5Checksum'), file.get('SharedWithMeTime'),
                     file.get('sharingUser').get('emailAddress'), file.get('sharingUser').get('displayName'),
-                    file.get('imageMediaMetadata').get('time'), file.get('imageMediaMetadata').get('cameraMake'), location,
-                    file.get('id'), file.get('mimeType')]
+                    file.get('imageMediaMetadata').get('time'), file.get('imageMediaMetadata').get('cameraMake'),
+                    location,
+                    file.get('hasThumbnail'), file.get('id'), file.get('mimeType')]
         elif file.get('sharingUser'):
             return [file.get('name'), file.get('size'), file.get('shared'), file.get('trashed'),
                     file.get('createdTime'), file.get('modifiedTime'), file.get('owners')[0].get('displayName'),
@@ -213,21 +232,23 @@ class GDrive:
                     file.get('md5Checksum'), file.get('sharedWithMeTime'),
                     file.get('sharingUser').get('emailAddress'), file.get('sharingUser').get('displayName'),
                     None, None, None,
-                    file.get('id'), file.get('mimeType')]
+                    file.get('hasThumbnail'), file.get('id'), file.get('mimeType')]
         elif file.get('imageMediaMetadata'):
             if file.get('imageMediaMetadata').get('location') == None:
                 location = None
             else:
                 location = 'latitude: ' + str(round(file.get('imageMediaMetadata').get('location').get('latitude'), 4)) \
-                           + ', longitude: ' + str(round(file.get('imageMediaMetadata').get('location').get('longitude'), 4))
+                           + ', longitude: ' + str(
+                    round(file.get('imageMediaMetadata').get('location').get('longitude'), 4))
             return [file.get('name'), file.get('size'), file.get('shared'), file.get('trashed'),
                     file.get('createdTime'), file.get('modifiedTime'), file.get('owners')[0].get('displayName'),
                     last_modifying_user, file.get('version'),
                     file.get('fileExtension'), file.get('modifiedByMeTime'),
                     file.get('md5Checksum'), file.get('SharedWithMeTime'),
                     None, None,
-                    file.get('imageMediaMetadata').get('time'), file.get('imageMediaMetadata').get('cameraMake'), location,
-                    file.get('id'), file.get('mimeType')]
+                    file.get('imageMediaMetadata').get('time'), file.get('imageMediaMetadata').get('cameraMake'),
+                    location,
+                    file.get('hasThumbnail'), file.get('id'), file.get('mimeType')]
         else:
             return [file.get('name'), file.get('size'), file.get('shared'), file.get('trashed'),
                     file.get('createdTime'), file.get('modifiedTime'), file.get('owners')[0].get('displayName'),
@@ -235,7 +256,7 @@ class GDrive:
                     file.get('fileExtension'), file.get('modifiedByMeTime'),
                     file.get('md5Checksum'), file.get('SharedWithMeTime'),
                     None, None, None, None, None,
-                    file.get('id'), file.get('mimeType')]
+                    file.get('hasThumbnail'), file.get('id'), file.get('mimeType')]
 
     def __file_download(self, service, file_id, file_name, mimetype):
 
@@ -276,3 +297,10 @@ class GDrive:
             fh.seek(0)
             with open(self.extract_path + os.sep + file_name, 'wb') as f:
                 shutil.copyfileobj(fh, f)
+
+    def __thumbnail_download(self, thumbnail_data, file_name):
+        try:
+            with open("./thumbnail/" + file_name + '.png', 'wb') as f:
+                f.write(thumbnail_data)
+        except Exception as e:
+            print(e)
