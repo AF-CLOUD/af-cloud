@@ -1,6 +1,6 @@
 from playwright.sync_api import Playwright, sync_playwright, expect
 
-
+###작동 오류###
 def run(playwright: Playwright) -> None:
     browser = playwright.webkit.launch(headless=False)
     context = browser.new_context()
@@ -17,6 +17,9 @@ def run(playwright: Playwright) -> None:
         with page.expect_popup() as popup_info:
             page.locator("button:has-text(\"Google로 로그인\"), button:has-text(\"Google 계정으로 로그인\")").click()
         page1 = popup_info.value
+        page1.set_default_timeout(0)
+
+    page1.wait_for_selector('input[type="email"]')
 
     # Click [aria-label="이메일 또는 휴대전화"]
     page1.locator("[aria-label=\"이메일 또는 휴대전화\"]").click()

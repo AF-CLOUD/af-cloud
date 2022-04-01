@@ -1,6 +1,6 @@
 from playwright.sync_api import Playwright, sync_playwright, expect
 
-
+###작동 오류###
 def run(playwright: Playwright) -> None:
     browser = playwright.webkit.launch(headless=False)
     context = browser.new_context()
@@ -17,15 +17,16 @@ def run(playwright: Playwright) -> None:
         with page.expect_popup() as popup_info:
             page.locator("button:has-text(\"Apple로 로그인\")").click()
         page1 = popup_info.value
+        page1.set_default_timeout(0)
 
     page1.wait_for_selector('input[type="text"]')
 
     # Click input[type="text"]
     page1.locator("input[type=\"text\"]").click()
-
+    
     # Fill input[type="text"]
-    page1.locator("input[type=\"text\"]").fill("ymaul2@korea.ac.kr")
-    #page1.type('input[type="email"]', "ymaul2@korea.ac.kr")
+    #page1.locator("input[type=\"text\"]").fill("ymaul2@korea.ac.kr")
+    page1.type('input[type="email"]', "ymaul2@korea.ac.kr")
 
     # Press Enter
     page1.locator("input[type=\"text\"]").press("Enter")
