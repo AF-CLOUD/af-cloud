@@ -25,7 +25,7 @@ def run(playwright: Playwright) -> None:
 
     # Fill input[type="text"]
     page1.locator("input[type=\"text\"]").fill("ymaul2@korea.ac.kr")
-    page1.type('input[type="email"]', "ymaul2@korea.ac.kr")
+    #page1.type('input[type="email"]', "ymaul2@korea.ac.kr")
 
     # Press Enter
     page1.locator("input[type=\"text\"]").press("Enter")
