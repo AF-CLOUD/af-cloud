@@ -27,11 +27,15 @@ def run(playwright: Playwright) -> None:  #2단계 앱 인증(이미 등록된 �
     box_cookie= context.cookies()    
     cookie_z = next((item for item in box_cookie if item['name']=='z'),None) #z의 value only
     cookies = {'z':str(cookie_z['value'])}
-    res = requests.get("https://app.box.com/folder/0", cookies=cookies) #자바스크립트 내부에 <script></script>파일,폴더 리스트 등 나옴 (res.text)
 
-    # ---------------------
     context.close()
     browser.close()
+    # res = requests.get("https://app.box.com/folder/0", cookies=cookies) #자바스크립트 내부에 <script></script>파일,폴더 리스트 등 나옴 (res.text)
+    # res = requests.get("https://app.box.com/folder/0") #자바스크립트 내부에 request_token
+    # print(res.content) #파일리스트 등
+    # print(res.text)
+    # ---------------------
+
 
 
 with sync_playwright() as playwright: #구글 로그인
