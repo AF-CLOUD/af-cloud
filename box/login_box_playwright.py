@@ -2,6 +2,7 @@ from math import factorial
 from xml.sax.xmlreader import Locator
 from playwright.sync_api import Playwright, sync_playwright, expect
 import time
+import re
 import requests
 
 def run(playwright: Playwright) -> None:  #2단계 앱 인증(이미 등록된 신뢰하는 앱), 구글, 기본 인증 가능
@@ -30,12 +31,21 @@ def run(playwright: Playwright) -> None:  #2단계 앱 인증(이미 등록된 �
 
     context.close()
     browser.close()
-    # res = requests.get("https://app.box.com/folder/0", cookies=cookies) #자바스크립트 내부에 <script></script>파일,폴더 리스트 등 나옴 (res.text)
-    # res = requests.get("https://app.box.com/folder/0") #자바스크립트 내부에 request_token
+    res = requests.get("https://app.box.com/folder/0", cookies=cookies) #자바스크립트 내부에 <script></script>파일,폴더 리스트 등 나옴 (res.text)
+    print(res)
+    response = requests.get("https://app.box.com/folder/0") #자바스크립트 내부에 request_token
+    res = response.text
+    string = res.split(';')
+    print(string)
+    r = re.compile("Box.config.requestToken")
+    string2="".join(list(filter(r.search, string)))
+    temp = re.findall("'(.*?)'", string2)
+    print(temp[0])
     # print(res.content) #파일리스트 등
+    # print("====================================")
     # print(res.text)
-    # ---------------------
 
+    # ---------------------
 
 
 with sync_playwright() as playwright: #구글 로그인
