@@ -52,15 +52,15 @@ class Box:
         parsing_dt = make_file_list.file_list()
 
 
-        file_id = "f_885745754197" #사용자가 지정한 파일로 교체할 예정~
+        file_id = "f_943706767031" #사용자가 지정한 파일로 교체할 예정~
         
         #file download   
         fd=file_download.f_download(z, file_id, self.request_token, "0.jpg", "file")
         fd.f_dload()
 
         #Box Notes
-        file_id = "f_"
-        notes = get_boxnotes_link.notes_link(z, file_id)
+        file_id = "f_885745754197"
+        notes = get_boxnotes_link.notes_link(z, self.request_token, file_id)
         notes.f_link()
     
 
