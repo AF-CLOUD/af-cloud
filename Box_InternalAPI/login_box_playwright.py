@@ -61,7 +61,7 @@ class Box:
         #Box Notes
         file_id = "f_885745754197"
         notes = get_boxnotes_link.notes_link(z, self.request_token, file_id)
-        notes.f_link()
+        boxnotes_link = notes.f_link()
     
 
 if __name__ =="__main__":
