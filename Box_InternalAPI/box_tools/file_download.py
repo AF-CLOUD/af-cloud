@@ -1,4 +1,6 @@
 import requests
+import urllib3
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
 class f_download:
     def __init__(self, z, file_id, request_token, file_des, file_name):
