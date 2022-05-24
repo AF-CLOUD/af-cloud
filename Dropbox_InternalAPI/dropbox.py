@@ -411,14 +411,12 @@ def main():
 
     urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 
-    print("[System] >>> Login succeeded!")
-
     while True:
         print("""
 
         <Select Login Mode>
         1.Google Login
-        2.Apple Lgoin
+        2.Apple Login
         3.Terminate
 
         """)
