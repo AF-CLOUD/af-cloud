@@ -18,7 +18,7 @@ class OneDrive_connector:
             PRINTI("OneDrive Exploration ERROR")
             return FC_ERROR
 
-        c_result = self.__call_collector(e)
+        c_result = self.__call_collector(e, a)
         if c_result == FC_ERROR:
             PRINTI("OneDrive Collector ERROR")
             return FC_ERROR
@@ -42,8 +42,10 @@ class OneDrive_connector:
         return e, e_result
 
     @staticmethod
-    def __call_collector(onedrive_data):
-        c = Collector(onedrive_data)
+    def __call_collector(onedrive_data, auth_data):
+        c = Collector(onedrive_data, auth_data)
+        file_len = c.get_num_of_file_list()
+        c.set_file_list()
         while True:
             menu = cd.select_menu()
             if menu == 0:  # exit
@@ -51,9 +53,23 @@ class OneDrive_connector:
             elif menu == 1:  # all of file
                 c.show_file_list()
             elif menu == 2:  # select file
-                a = 1
-            elif menu == 3:  # extract thumbnail
-                a = 1
+                c.show_file_list()
+                file_len = c.get_num_of_file_list()
+                while True:
+                    download_number = int(input("Put file numbers (exit:0): "))
+                    if download_number == 0:
+                        break
+
+                    if download_number < 0:
+                        print("\n Please put correct number.")
+                        continue
+                    elif download_number > file_len:
+                        print("Please put correct number.")
+                        continue
+                    c.download_file(download_number)
+            elif menu == 3:  # search thumbnail
+                q = input("What do you want to search for? >> ")
+                c.search_file(q)
             else:
                 print(" [!] Invalid Menu. Choose Again.")
                 continue

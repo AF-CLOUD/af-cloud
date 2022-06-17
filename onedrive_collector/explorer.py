@@ -1,3 +1,37 @@
+"""
+============================================
+    "explorer" Module
+============================================
+.. moduleauthor:: Jihyeok Yang <piki@korea.ac.kr>
+
+.. note::
+    'TITLE'             : OneDrive - Explorer in AF-Forensics\n
+    'AUTHOR'            : Jihyeok Yang\n
+    'TEAM'              : DFRC\n
+    'VERSION'           : 0.0.4\n
+    'RELEASE-DATE'      : 2022-05-18\n
+
+--------------------------------------------
+
+Description
+===========
+
+    OneDrive Internal APIs 를 사용해서 OneDrive에 저장된 데이터 파싱하는 모듈
+
+    도구이름    : Forensics Acquisition & Criminal investigation Tool(FACT)\n
+    프로젝트    : 안티-포렌식 기술 대응을 위한 데이터 획득 및 분석 기술 연구\n
+    연구기관    : 고려대학교(Korea Univ.)\n
+    지원기관    : 경찰청, 과학기술정보통신부
+
+History
+===========
+
+    * 2022-05-18 : 초기 버전
+    * 2022-05-27 : 썸네일 다운로드
+    * 2022-06-05 : 파일 버전 획득
+
+"""
+
 from onedrive_collector.authenticator import *
 from tqdm import tqdm
 
@@ -59,7 +93,8 @@ class Exploration:
             self.__normal_file_list = self.__remake_file_list(file_list, 'root')
             self.__number_of_normal_file = len(self.__normal_file_list)
             self.__flag = 0
-        except:
+        except Exception as e:
+            PRINTE(e)
             return FC_ERROR
 
         return FC_OK

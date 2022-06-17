@@ -5,10 +5,10 @@
 .. moduleauthor:: Jihyeok Yang <piki@korea.ac.kr>
 
 .. note::
-    'TITLE'             : Cloud_Core python file in AF-Forensics\n
+    'TITLE'             : OneDrive - Authenticator in AF-Forensics\n
     'AUTHOR'            : Jihyeok Yang\n
     'TEAM'              : DFRC\n
-    'VERSION'           : 0.0.1\n
+    'VERSION'           : 0.0.4\n
     'RELEASE-DATE'      : 2022-05-18\n
 
 --------------------------------------------
@@ -27,6 +27,9 @@ History
 ===========
 
     * 2022-05-18 : 초기 버전
+    * 2022-06-01 : *로그인 Personal 만 가능하게 수정 -- 추후 변경 여부 파악
+    * 2022-06-13 : 코드 안정화 -- add login wait time(sol> cid, caller)
+    * 2022-06-17 : 개인 중요 보관소 추가 (예정)
 
 """
 
@@ -61,6 +64,7 @@ class Authentication:
     def __login(self):
         try:
             with sync_playwright() as playwright:
+                # TRUE = 화면 안보임, FALSE = 화면 보임
                 browser = playwright.chromium.launch(headless=True)
                 context = browser.new_context()
 
@@ -78,7 +82,8 @@ class Authentication:
                 # Click text=사용자가 만든 계정
                 page.wait_for_timeout(1000)
                 if page.frame_locator("section[role=\"main\"] iframe").locator("text=자세한 정보 필요").is_visible():
-                    p_or_b = input(Colors.YELLOW + "[>>] Which Account? Business: 1, Personal: 2  >>" + Colors.RESET)
+                    #p_or_b = input(Colors.YELLOW + "[>>] Which Account? Business: 1, Personal: 2  >>" + Colors.RESET)
+                    p_or_b = 2
                     if p_or_b == 1:
                         with page.expect_navigation():
                             page.frame_locator("section[role=\"main\"] iframe").locator("text=IT 부서에서 만든 계정").click()
@@ -138,7 +143,14 @@ class Authentication:
                     page.locator("text=아니요").click()
 
                 # ---------------------
-                time.sleep(3)
+                page.wait_for_timeout(1000)
+                while True:
+                    if "gologin" in page.url:
+                        page.goto(page.url)
+                        page.wait_for_timeout(1000)
+                    else:
+                        break
+
                 self.__caller = page.url[page.url.find("cid=") + 4:]
                 self.__all_cookies = page.context.cookies()
 
