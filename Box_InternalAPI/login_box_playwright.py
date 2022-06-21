@@ -4,10 +4,7 @@ import re
 import requests
 import json
 from box_tools import get_box_file_list
-from box_tools import box_file_downloads
 from box_tools import file_download
-from box_tools import get_boxnotes_link
-from box_tools import Box_metadata
 from box_tools import Box_explorer
 class Box:
     def __init__(self, path):
@@ -68,30 +65,6 @@ class Box:
         #file download   
         fd=file_download.f_download(z, file_id, self.request_token, "0.jpg", "test.pdf")
         fd.f_dload()
-        # #Box Notes
-        # file_id = "f_885745754197"
-        # notes = get_boxnotes_link.notes_link(z, self.request_token, file_id)
-        # boxnotes_link = notes.f_link()
-    
-
-        #여기! authorization bearer 받기
-        
-
-        
-
-
-
-
-
-        # #get  thumbnail
-        # url = "https://app.box.com/representation/file_version_997922480143/thumb_1024.jpg"
-        # fname = "997922480143"
-        # thumb = Box_thumbnail.thumbnail(cookies_z)
-        # thumb.get_thumbnail(url, fname)
-
-        # meta = Box_metadata.file_metadata(z, self.path)
-        # meta.get_metadata()
-
 
         #user_request 
         temp = 3
