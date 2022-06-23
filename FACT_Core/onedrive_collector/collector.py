@@ -173,6 +173,17 @@ class Collector:
         print(tabulate.tabulate(result, headers="firstrow", tablefmt='github', showindex=range(1, file_count),
                                 numalign="left"))
 
+    def search_file_by_name(self, q):
+        search_result = []
+        name = q
+
+        for file in self.__file_list:
+            if name in file['ownerName']:
+                search_result.append(file)
+
+        return self.show_file_list_local(search_result)
+
+
     def search_file(self, q):
         search_result = []
         search_response = self.__request_search_file(q)
