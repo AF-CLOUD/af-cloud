@@ -3,27 +3,44 @@ import module.Cloud_Display as cd
 
 class OneDrive_connector:
     def __init__(self):
+        self.__flag = None
         pass
 
     def excute(self, credential):
+        # Personal Vault 사용 금지 - 내부 에러 존재
+        self.__flag = int(input("Do you want open \'PERSONAL VAULT\'? (1:Yes, 0:No) >>"))
+        self.__flag = 0
         PRINTI("Start OneDrive Module")
+        if self.__flag == 0:
+            a, a_result = self.__call_auth(credential)
+            if a_result == FC_ERROR:
+                PRINTI("OneDrive Authentication ERROR")
+                return FC_ERROR
 
-        a, a_result = self.__call_auth(credential)
-        if a_result == FC_ERROR:
-            PRINTI("OneDrive Authentication ERROR")
-            return FC_ERROR
+            e, e_result = self.__call_explorer(a)
+            if e_result == FC_ERROR:
+                PRINTI("OneDrive Exploration ERROR")
+                return FC_ERROR
 
-        e, e_result = self.__call_explorer(a)
-        if e_result == FC_ERROR:
-            PRINTI("OneDrive Exploration ERROR")
-            return FC_ERROR
-
-        c_result = self.__call_collector(e, a)
-        if c_result == FC_ERROR:
-            PRINTI("OneDrive Collector ERROR")
-            return FC_ERROR
+            c_result = self.__call_collector(e, a)
+            if c_result == FC_ERROR:
+                PRINTI("OneDrive Collector ERROR")
+                return FC_ERROR
+        else:
+            p, p_result = self.__call_pv(credential)
+            if p_result == FC_ERROR:
+                PRINTI("OneDrive Authentication ERROR (Personal Vault Version)")
+                return FC_ERROR
 
         PRINTI("End OneDrive Module")
+
+    @staticmethod
+    def __call_pv(credential):
+        PRINTI("OneDrive Authentication(Personal Vault Version) .... Start")
+        pv = Personal_Vault(credential=credential)
+        p_result = pv.run()
+        PRINTI("OneDrive Authentication(Personal Vault Version) .... End")
+        return pv, p_result
 
     @staticmethod
     def __call_auth(credential):
@@ -67,9 +84,28 @@ class OneDrive_connector:
                         print("Please put correct number.")
                         continue
                     c.download_file(download_number)
-            elif menu == 3:  # search thumbnail
-                q = input("What do you want to search for? >> ")
-                c.search_file(q)
+            elif menu == 3:  # search
+                sm = cd.search_menu()
+                s_input = CInput()
+                if sm == 0:
+                    continue
+                elif sm == 1:
+                    q = input("What do you want to search for? >> ")
+                    c.search_file(q)
+                elif sm == 2:
+                    # 제작 ...ing 중
+                    search_period = s_input.set_m_period()
+                    if search_period[0] and search_period[1]:
+                        if search_period[0] != '1970-01-01':
+                            re_start_time = datetime.datetime.strptime(search_period[0],
+                                                                       "%Y-%m-%d") - datetime.timedelta(days=1)
+                            re_start_time = re_start_time.strftime("%Y-%m-%d")
+                        else:
+                            re_start_time = search_period[0]
+                        s_period = re_start_time
+                        e_period = search_period[1]
+                        c.search_file_by_date(s_period, e_period)
             else:
                 print(" [!] Invalid Menu. Choose Again.")
                 continue
+        return FC_OK
