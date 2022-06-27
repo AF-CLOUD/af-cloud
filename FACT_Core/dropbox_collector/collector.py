@@ -107,7 +107,7 @@ class Collector:
                'w': w[0][1],
             }
 
-            url = "https://www.dropbox.com/pri/get" + revisionable_file[to_download][0][1] + "?"
+            url = "https://www.dropbox.com/pri/get" + revisionable_file[to_download-1][0][1] + "?"
             response = requests.get(url, params=params, cookies=cookies, verify=False)
 
             with open("Revision/%s/[Ver.%d]%s" % (

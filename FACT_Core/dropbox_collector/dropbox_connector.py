@@ -106,7 +106,7 @@ class Dropbox_connector():
                             if mode == "y" or "Y":
                                 c.file_revisions_download(revisionable_file, cookies)
 
-                            elif mode == "n" or "N":
+                            if mode == "n" or "N":
                                 break
 
                             else:
