@@ -29,7 +29,7 @@ History
     * 2022-05-18 : 초기 버전
     * 2022-06-01 : *로그인 Personal 만 가능하게 수정 -- 추후 변경 여부 파악
     * 2022-06-13 : 코드 안정화 -- add login wait time(sol>> cid, caller)
-    * 2022-06-20 : 개인 중요 보관소 추가 --> playwright 버그 존재 사용 잠정 정지
+    * 2022-06-22 : 개인 중요 보관소 제거
 
 """
 
@@ -46,7 +46,6 @@ class Authentication:
         self.__caller = None
         self.__after_login_url = None
         self.__header_canary = None
-        self.__flag = None
 
     def run(self):
         if self.__login() == FC_ERROR:
@@ -64,8 +63,7 @@ class Authentication:
 
     def __login(self):
         # 버그 존재 사용 금지
-        self.__flag = int(input("Do you want open \'PERSONAL VAULT\'? (1:Yes, 0:No) >>"))
-        self.__flag = 0
+
         try:
             with sync_playwright() as playwright:
                 # TRUE = 화면 안보임, FALSE = 화면 보임
@@ -146,54 +144,9 @@ class Authentication:
                 with page.expect_navigation():
                     page.locator("text=아니요").click()
                 page.wait_for_timeout(1000)
-                # 개인 중요 보관소 open
-                if self.__flag == 1:
-                    PRINT("개인 중요 보관소는 인증코드가 필요합니다. 다음의 내용들을 입력해주세요.")
-                    time.sleep(1)
-                    with page.expect_navigation():
-                        with page.expect_popup() as popup_info:
-                            page.locator("text=개인 중요 보관소").click()
-                            time.sleep(2)
-                        page1 = popup_info.value
-
-                    if page1.locator("text=본인 여부 확인").is_visible():
-                        factor2_texts = page1.locator("div[role=\"button\"]").all_inner_texts()
-                        cnt = 1
-                        if len(factor2_texts) > 1:
-                            for factor2_text in factor2_texts:
-                                PRINTI(str(cnt) + '. ' + factor2_text.replace('\n', ''))
-                                cnt += 1
-                            factor2_cnt = input("몇 번째로 인증하시겠습니까? >> ")
-                            page1.locator("div[role=\"button\"]").locator(
-                                "text =" + factor2_texts[int(factor2_cnt) - 1].replace('\t', '').replace('\n','')).click()
-                        else:
-                            with page1.expect_navigation():
-                                page1.locator("div[role=\"button\"]").click()
-                        page1.wait_for_timeout(500)
-
-                        if page1.locator("text=전화 번호 확인").is_visible():
-                            # SMS
-                            PRINTI(page1.locator("xpath=//*[@id=\"idDiv_SAOTCS_ProofConfirmationDesc\"]").text_content())
-                            factor2_sms = input("전화 번호 마지막 4자리를 넣어주세요 >>")
-                            page1.locator("xpath=//*[@id=\"idTxtBx_SAOTCS_ProofConfirmation\"]").fill(factor2_sms)
-                            page1.locator("xpath=//*[@id=\"idSubmit_SAOTCS_SendCode\"]").click()
-                        else:
-                            # E-mail
-                            PRINTI(page1.locator("xpath=//*[@id=\"idDiv_SAOTCC_Description\"]").text_content())
-
-                        page1.wait_for_timeout(500)
-                        factor2 = input("코드를 넣어주세요 >>")
-                        page1.locator("[placeholder=\"코드\"]").click()
-                        page1.locator("[placeholder=\"코드\"]").fill(factor2)
-                        page1.locator("input:has-text(\"확인\")").click()
-
-                    elif page1.locator("text=로그인 요청 승인").is_visible():
-                        # App Login
-                        PRINTI(page1.locator("xpath=//*[@id=\"idDiv_SAOTCAS_Description\"]").text_content())
-                        factor2 = input("승인이 완료되면 엔터를 눌러주세요.")
 
                 # ---------------------
-                page1.wait_for_timeout(1000)
+                page.wait_for_timeout(1000)
                 while True:
                     if "gologin" in page.url:
                         page.goto(page.url)
@@ -285,6 +238,3 @@ class Authentication:
 
     def get_parameter_caller(self):
         return self.__caller
-
-    def get_flag(self):
-        return self.__flag

@@ -28,14 +28,16 @@ History
 
     * 2022-05-18 : 초기 버전 - 생성
     * 2022-05-25 : 파일 목록 추가
-    * 2022-06-05 : 검색 기능 추가
+    * 2022-06-05 : 검색 기능 추가 (query using Internal API)
     * 2022-06-16 : 다운로드 기능 추가
+    * 2022-06-23 : 기간 별 검색 기능 추가 (query using Metadata)
 
     * 해야할 일들 : 휴지통 다운로드... 분석 및 구현....
 
 """
 
 from onedrive_collector.explorer import *
+from onedrive_collector.PV_authenticator_and_explorer import *
 
 class Collector:
     def __init__(self, onedrive_data, auth_data):
@@ -77,6 +79,23 @@ class Collector:
         else:
             print("[!] Download_error!")
 
+    def search_file_by_date(self, start, end):
+        search_result = []
+        s_time = datetime.datetime.strptime(start, "%Y-%m-%d")
+        e_time = datetime.datetime.strptime(end, "%Y-%m-%d")
+
+        for file in self.__file_list:
+            c_time = datetime.datetime.strptime(file['displayCreationDate'], "%Y-%m-%d")
+            m_time = datetime.datetime.strptime(file['displayModifiedDate'], "%Y-%m-%d")
+
+            if s_time <= c_time and c_time <= e_time:
+                search_result.append(file)
+                continue
+            elif s_time <= m_time and m_time <= e_time:
+                search_result.append(file)
+                continue
+
+        return self.show_file_list_local(search_result)
 
     def show_file_list(self):
         file_count = len(self.__re_file_list)
@@ -101,13 +120,22 @@ class Collector:
             ticks_modi = file['modifiedDate']
             converted_ticks_modi = datetime.datetime(1, 1, 1, 9) + datetime.timedelta(microseconds=ticks_modi / 10)
             converted_ticks_modi.strftime("%Y-%m-%d %H:%M:%S")
+
+            name = file['name']
+            mtype = file['mimeType']
+
+            if len(name) >= 20:
+                name = name[0:8] + '....' + name[-6:]
+            if len(mtype) >= 20:
+                mtype = mtype[0:8] + '....' + mtype[-6:]
+
             if file.get('vault') == None:
-                result.append([file['name'] + file['extension'], file['size'], file['mimeType'], converted_ticks,
+                result.append([name + file['extension'], file['size'], mtype, converted_ticks,
                                converted_ticks_modi,
                                file['id'], 'False', file['urls']['download']])
             else:
                 result.append(
-                    [file['name'] + file['extension'], file['size'], file['mimeType'], converted_ticks,
+                    [name + file['extension'], file['size'], mtype, converted_ticks,
                      converted_ticks_modi, file['id'],
                      'True', file['urls']['download']])
 
@@ -133,13 +161,21 @@ class Collector:
             ticks_modi = file['modifiedDate']
             converted_ticks_modi = datetime.datetime(1, 1, 1, 9) + datetime.timedelta(microseconds=ticks_modi / 10)
             converted_ticks_modi.strftime("%Y-%m-%d %H:%M:%S")
+            name = file['name']
+            mtype = file['mimeType']
+
+            if len(name) >= 20:
+                name = name[0:8] + '....' + name[-6:]
+            if len(mtype) >= 20:
+                mtype = mtype[0:10] + '....' + mtype[-6]
+
             if file.get('vault') == None:
-                result.append([file['name'] + file['extension'], file['size'], file['mimeType'], converted_ticks,
+                result.append([name + file['extension'], file['size'], mtype, converted_ticks,
                                converted_ticks_modi,
                                file['id'], 'False', file['urls']['download']])
             else:
                 result.append(
-                    [file['name'] + file['extension'], file['size'], file['mimeType'], converted_ticks,
+                    [name + file['extension'], file['size'], mtype, converted_ticks,
                      converted_ticks_modi, file['id'],
                      'True', file['urls']['download']])
 
@@ -153,6 +189,17 @@ class Collector:
         print("FILE_COUNT:" + str(file_count - 1))
         print(tabulate.tabulate(result, headers="firstrow", tablefmt='github', showindex=range(1, file_count),
                                 numalign="left"))
+
+    def search_file_by_name(self, q):
+        search_result = []
+        name = q
+
+        for file in self.__file_list:
+            if name in file['ownerName']:
+                search_result.append(file)
+
+        return self.show_file_list_local(search_result)
+
 
     def search_file(self, q):
         search_result = []

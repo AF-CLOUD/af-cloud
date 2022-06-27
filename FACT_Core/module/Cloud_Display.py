@@ -37,6 +37,21 @@ def select_menu():
     return int(num)
 
 
+def search_menu():
+    print()
+    print("###########################")
+    print("####### S.E.A.R.C.H #######")
+    print("###########################")
+    print("#    0. EXIT              #")
+    print("#    1. String Search     #")
+    print("#    2. Period            #")
+    print("#    3. User              #")
+    print()
+    num = int(input("Select Menu: "))
+    return num
+
+
+
 def show_file_list(file_list):
     local_timezone = pytz.timezone('Asia/Seoul')
     new_list = list()
@@ -61,31 +76,6 @@ def show_file_list(file_list):
     print("======DRIVE_FILE_LIST======")
     print("FILE_COUNT:", file_count - 1)
     print(tabulate.tabulate(new_list, headers="firstrow", tablefmt='github', showindex=range(1, file_count),
-                            numalign="left"))
-
-
-def show_file_list_onedirve(file_list):
-    new_list = []
-    print('======ONEDRIVE_FILE_LIST======')
-    print('FILE_COUNT:', len(file_list) - 1)
-
-    for id, file, f, created_time, modified_time, size, path in file_list:
-        if created_time is None:
-            created_time = '-'
-        elif type(created_time) == datetime.datetime:
-            created_time = created_time + datetime.timedelta(hours=9)
-
-        if modified_time is None:
-            modified_time = '-'
-        elif type(modified_time) == datetime.datetime:
-            modified_time = modified_time + datetime.timedelta(hours=9)
-
-        if path is None:
-            path = '-'
-
-        new_list.append([file, f, created_time, modified_time, size, path])
-
-    print(tabulate.tabulate(new_list, headers="firstrow", tablefmt='github', showindex=range(1, len(file_list)),
                             numalign="left"))
 
 

@@ -53,7 +53,7 @@ class Exploration:
         self.__total_file_count = None
         self.__thumbnail_count = 0
         self.__total_version_count = 0
-        self.__flag = auth_data.get_flag()
+        self.__flag = 0
         self.__file_list = []
         self.__folder_list = []
 
