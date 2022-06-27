@@ -14,6 +14,12 @@ import pytz
 import dateutil.parser
 import tabulate
 from mega import Mega
+from selenium.webdriver.common.by import By
+import undetected_chromedriver as uc
+import os
+import re
+from time import sleep
+
 
 urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 

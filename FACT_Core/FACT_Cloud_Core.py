@@ -33,6 +33,7 @@ History
     * 2022-05-18 Yang(DFRC): 초기 버전
     * 2022-05-20 Yang(DFRC): OneDrive_connector 추가
     * 2022-06-17 Kim(DFRC): MEGA_connector 추가
+    * 2022-06-17 Yoon(DFRC): Dropbox_connector 추가
 
 
 Method
@@ -40,6 +41,7 @@ Method
 """
 from onedrive_collector.onedrive_connector import *
 from mega_collector.mega_connector import *
+from dropbox_collector.dropbox_connector import *
 import module.Cloud_Display as cd
 
 class FC_Core():
@@ -91,7 +93,7 @@ class FC_Core():
         elif self.__service == 2:
             self.__connector = OneDrive_connector()
         elif self.__service == 3:
-            self.__connector = OneDrive_connector()
+            self.__connector = Dropbox_connector()
         elif self.__service == 4:
             self.__connector = OneDrive_connector()
         elif self.__service == 5:
