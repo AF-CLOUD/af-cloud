@@ -91,7 +91,7 @@ class Collector:
             if s_time <= c_time and c_time <= e_time:
                 search_result.append(file)
                 continue
-            elif s_time <= m_time and c_time <= m_time:
+            elif s_time <= m_time and m_time <= e_time:
                 search_result.append(file)
                 continue
 
@@ -120,13 +120,22 @@ class Collector:
             ticks_modi = file['modifiedDate']
             converted_ticks_modi = datetime.datetime(1, 1, 1, 9) + datetime.timedelta(microseconds=ticks_modi / 10)
             converted_ticks_modi.strftime("%Y-%m-%d %H:%M:%S")
+
+            name = file['name']
+            mtype = file['mimeType']
+
+            if len(name) >= 20:
+                name = name[0:8] + '....' + name[-6:]
+            if len(mtype) >= 20:
+                mtype = mtype[0:8] + '....' + mtype[-6:]
+
             if file.get('vault') == None:
-                result.append([file['name'] + file['extension'], file['size'], file['mimeType'], converted_ticks,
+                result.append([name + file['extension'], file['size'], mtype, converted_ticks,
                                converted_ticks_modi,
                                file['id'], 'False', file['urls']['download']])
             else:
                 result.append(
-                    [file['name'] + file['extension'], file['size'], file['mimeType'], converted_ticks,
+                    [name + file['extension'], file['size'], mtype, converted_ticks,
                      converted_ticks_modi, file['id'],
                      'True', file['urls']['download']])
 
@@ -152,13 +161,21 @@ class Collector:
             ticks_modi = file['modifiedDate']
             converted_ticks_modi = datetime.datetime(1, 1, 1, 9) + datetime.timedelta(microseconds=ticks_modi / 10)
             converted_ticks_modi.strftime("%Y-%m-%d %H:%M:%S")
+            name = file['name']
+            mtype = file['mimeType']
+
+            if len(name) >= 20:
+                name = name[0:8] + '....' + name[-6:]
+            if len(mtype) >= 20:
+                mtype = mtype[0:10] + '....' + mtype[-6]
+
             if file.get('vault') == None:
-                result.append([file['name'] + file['extension'], file['size'], file['mimeType'], converted_ticks,
+                result.append([name + file['extension'], file['size'], mtype, converted_ticks,
                                converted_ticks_modi,
                                file['id'], 'False', file['urls']['download']])
             else:
                 result.append(
-                    [file['name'] + file['extension'], file['size'], file['mimeType'], converted_ticks,
+                    [name + file['extension'], file['size'], mtype, converted_ticks,
                      converted_ticks_modi, file['id'],
                      'True', file['urls']['download']])
 
