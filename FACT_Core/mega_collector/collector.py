@@ -50,7 +50,8 @@ class Collector:
         for f in self.__real_file_list:
             if len(f[1]) >= 20:
                 tmp = f[1]
-                f[1] = f[1][:20] + '....'
+                f[1] = f[1][0:8] + '....' + f[1][-6:]
+                # f[1] = f[1][:20] + '....'
                 new_list.append((f[:7]))
                 f[1] = tmp
             else:
@@ -202,7 +203,8 @@ class Collector:
         for f in file_list:
             if len(f[1]) >= 20:
                 tmp = f[1]
-                f[1] = f[1][:20] + '....'
+                f[1] = f[1][0:8] + '....' + f[1][-6:]
+                # f[1] = f[1][:20] + '....'
                 result.append((f[:7]))
                 f[1] = tmp
             else:
