@@ -72,7 +72,7 @@ class Personal_Vault:
         try:
             with sync_playwright() as playwright:
                 # TRUE = 화면 안보임, FALSE = 화면 보임
-                browser = playwright.chromium.launch(headless=False)
+                browser = playwright.chromium.launch(headless=True)
                 context = browser.new_context()
 
                 # Open new page
