@@ -4,8 +4,14 @@ import re
 import requests
 import json
 from box_tools import get_box_file_list
-from box_tools import file_download
 from box_tools import Box_explorer
+import urllib3
+from tabulate import tabulate
+import os 
+from pyfiglet import Figlet
+from termcolor import colored
+
+urllib3.disable_warnings(urllib3.exceptions.InsecureRequestWarning)
 class Box:
     def __init__(self, path):
         self.box = "box"
@@ -16,10 +22,10 @@ class Box:
         context = browser.new_context()
         page = context.new_page()
         page.goto("https://account.box.com/login")
-        page.type('input[type="text"]',"kyn0503121@korea.ac.kr")
+        page.type('input[type="text"]',"kim_3738@korea.ac.kr")
         page.click("#login-submit")
 
-        page.type('input[type="password"]', 'forensic4738')
+        page.type('input[type="password"]', 'dfrc4738')
         page.click('#login-submit-password')
 
         #if 2-factor(SMS or TOTP)
@@ -51,27 +57,31 @@ class Box:
                 print("필수 정보 : ")
                 print("cookie z : ", cookies_z)
                 print("Request_Token : ", self.request_token)
-                print(" ")
+                print("")
                 flag =0
             except:
                 pass
         # parsing all file list (root & other folder)
+        print("로그인 성공, 메타데이터 수집을 시작합니다. ")
         make_file_list = get_box_file_list.get_file_list(string, cookies_z, self.request_token)
-        parsing_dt = make_file_list.file_list()
+        parsing_dt, printlist = make_file_list.file_list()
         with open("meta.txt",'w') as f:
-            json.dump(parsing_dt, f) 
-        file_id = "f_943706767031" #사용자가 지정한 파일로 교체할 예정~
-        
-        #file download   
-        fd=file_download.f_download(z, file_id, self.request_token, "0.jpg", "test.pdf")
-        fd.f_dload()
+            json.dump(parsing_dt, f)
+        print("메타데이터 및 썸네일 수집이 완료되었습니다. 작업을 골라주세요. ")
+        #임시! PARSING DT에 파일에서 불러온 딕셔너리 저장
+        # parsing_dt=""
 
-        #user_request 
-        temp = 3
-        user_action =Box_explorer.user_menu(cookies_z, parsing_dt, self.request_token)
-        user_action.user_req(temp)
+        user_action =Box_explorer.user_menu(cookies_z, printlist, parsing_dt,  self.request_token)
+        # user_action =Box_explorer.user_menu(cookies_z,  self.request_token)
+        user_action.main_explorer()
+
 if __name__ =="__main__":
-    with sync_playwright() as playwright: #구글 로그인
+    with sync_playwright() as playwright: #구글 로그인, box로그인 둘 다 가능
+
+        os.system('cls')
+        f = Figlet(font='big')
+        print(colored(f.renderText('< FACT >\n                        - CLOUD'), 'blue'))
+        print(colored("[Police-Lab 2.0] Research on Data Acquisition and Analysis for Counter Anti-Forensics\n\n", 'blue'))
         path = r"D:\승아\AF안티포렌식\box\playwright\0"
         box_forensics = Box(path)
         box_forensics.run(playwright)
