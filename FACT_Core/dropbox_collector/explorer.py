@@ -62,7 +62,7 @@ class Exploration:
         print("[System] >>> Done")
 
         print("\n[System] >>> File Thumbnails Browsing Start!")
-        #self.__get_thumbnails(self.__auth_data.headers(), self.__auth_data.cookies()) #임시로 꺼둠
+        self.__get_thumbnails(self.__auth_data.headers(), self.__auth_data.cookies()) #임시로 꺼둠
         print("[System] >>> Done")
 
     def __recursive_search_folder(self, fq_path, headers, cookies):

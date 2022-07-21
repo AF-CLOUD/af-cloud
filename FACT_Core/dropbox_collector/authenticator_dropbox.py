@@ -2,7 +2,7 @@
 ============================================
     "authenticator" Module
 ============================================
-.. moduleauthor:: Jihyeok Yang <piki@korea.ac.kr>
+.. moduleauthor:: Ho Yoon <ymaul2@korea.ac.kr>
 
 .. note::
     'TITLE'             : Dropbox - Authenticator in AF-Forensics\n
@@ -72,12 +72,12 @@ class Authentication_dropbox:
             sleep(3)
             driver.find_element(By.CLASS_NAME, "whsOnd.zHQkBf").send_keys(self.__id)
             driver.find_element(By.CLASS_NAME,
-                                "VfPpkd-LgbsSe.VfPpkd-LgbsSe-OWXEXe-k8QpJ.VfPpkd-LgbsSe-OWXEXe-dgl2Hf.nCP5yc.AjY5Oe.DuMIQc.qfvgSe.qIypjc.TrZEUc.lw1w4b").click()
+                                "VfPpkd-LgbsSe.VfPpkd-LgbsSe-OWXEXe-k8QpJ.VfPpkd-LgbsSe-OWXEXe-dgl2Hf.nCP5yc.AjY5Oe.DuMIQc.LQeN7.qIypjc.TrZEUc.lw1w4b").click()
             sleep(3)
             driver.find_element(By.CLASS_NAME, "whsOnd.zHQkBf").send_keys(self.__password)
             sleep(1)
             driver.find_element(By.CLASS_NAME,
-                                "VfPpkd-LgbsSe.VfPpkd-LgbsSe-OWXEXe-k8QpJ.VfPpkd-LgbsSe-OWXEXe-dgl2Hf.nCP5yc.AjY5Oe.DuMIQc.qfvgSe.qIypjc.TrZEUc.lw1w4b").click()
+                                "VfPpkd-LgbsSe.VfPpkd-LgbsSe-OWXEXe-k8QpJ.VfPpkd-LgbsSe-OWXEXe-dgl2Hf.nCP5yc.AjY5Oe.DuMIQc.LQeN7.qIypjc.TrZEUc.lw1w4b").click()
             driver.switch_to.window(driver.window_handles[0])
 
             # print("[System] >>> Click OK button on the device")
