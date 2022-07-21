@@ -9,7 +9,7 @@ class OneDrive_connector:
     def excute(self, credential):
         # Personal Vault 사용 금지 - 내부 에러 존재
         self.__flag = int(input("Do you want open \'PERSONAL VAULT\'? (1:Yes, 0:No) >>"))
-        self.__flag = 0
+        # self.__flag = 0
         PRINTI("Start OneDrive Module")
         if self.__flag == 0:
             a, a_result = self.__call_auth(credential)
@@ -102,7 +102,9 @@ class OneDrive_connector:
                         else:
                             re_start_time = search_period[0]
                         s_period = re_start_time
-                        e_period = search_period[1]
+                        e_period = datetime.datetime.strptime(search_period[1],
+                                                                   "%Y-%m-%d") - datetime.timedelta(days=1)
+                        e_period = e_period.strftime("%Y-%m-%d")
                         c.search_file_by_date(s_period, e_period)
                 elif sm == 3:
                     q = input("What username do yo want >> ")

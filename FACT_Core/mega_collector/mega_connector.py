@@ -52,8 +52,27 @@ class MEGA_connector:
                         print("Please put correct number.")
                         continue
                     c.download_file(download_number)
-            elif menu == 3:  # search thumbnail
-                pass
+            elif menu == 3:  # search
+                sm = cd.search_menu()
+                s_input = CInput()
+                if sm == 0:
+                    continue
+                elif sm == 1:
+                    q = input("What do you want to search for? >> ")
+                    c.search_file(q)
+                elif sm == 2:
+                    search_period = s_input.set_m_period()
+                    if search_period[0] and search_period[1]:
+                        if search_period[0] != '1970-01-01':
+                            re_start_time = datetime.datetime.strptime(search_period[0],
+                                                                       "%Y-%m-%d") - datetime.timedelta(days=1)
+                            re_start_time = re_start_time.strftime("%Y-%m-%d")
+                        else:
+                            re_start_time = search_period[0]
+                        s_period = re_start_time
+                        e_period = datetime.datetime.strptime(search_period[1], "%Y-%m-%d") + datetime.timedelta(days=1)
+                        e_period = e_period.strftime("%Y-%m-%d")
+                        c.search_file_by_date(s_period, e_period)
             else:
                 print(" [!] Invalid Menu. Choose Again.")
                 continue

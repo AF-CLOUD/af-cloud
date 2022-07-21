@@ -83,19 +83,22 @@ class Authentication:
 
                 # Click text=사용자가 만든 계정
                 page.wait_for_timeout(1000)
-                if page.frame_locator("section[role=\"main\"] iframe").locator("text=자세한 정보 필요").is_visible():
-                    #p_or_b = input(Colors.YELLOW + "[>>] Which Account? Business: 1, Personal: 2  >>" + Colors.RESET)
-                    p_or_b = 2
-                    if p_or_b == 1:
-                        with page.expect_navigation():
-                            page.frame_locator("section[role=\"main\"] iframe").locator("text=IT 부서에서 만든 계정").click()
-                            PRINT('Access - Business')
+                try:
+                    if page.frame_locator("section[role=\"main\"] iframe").locator("text=자세한 정보 필요").is_visible():
+                        #p_or_b = input(Colors.YELLOW + "[>>] Which Account? Business: 1, Personal: 2  >>" + Colors.RESET)
+                        p_or_b = 2
+                        if p_or_b == 1:
+                            with page.expect_navigation():
+                                page.frame_locator("section[role=\"main\"] iframe").locator("text=IT 부서에서 만든 계정").click()
+                                PRINT('Access - Business')
+                        else:
+                            with page.expect_navigation():
+                                page.frame_locator("section[role=\"main\"] iframe").locator("text=사용자가 만든 계정").click()
+                                PRINT('Access - Personal')
                     else:
-                        with page.expect_navigation():
-                            page.frame_locator("section[role=\"main\"] iframe").locator("text=사용자가 만든 계정").click()
-                            PRINT('Access - Personal')
-                else:
-                    PRINT('Access')
+                        PRINT('Access')
+                except:
+                    pass
 
                 page.locator("input[name=\"passwd\"]").fill(self.__password)
 
@@ -209,7 +212,6 @@ class Authentication:
         }
 
         params = (
-            # ('mkt', ['ko-KR', 'ko-KR']),
             ('lc', '2066'),
             ('sw', 'bypassConfig'),
         )

@@ -50,7 +50,8 @@ class Collector:
         for f in self.__real_file_list:
             if len(f[1]) >= 20:
                 tmp = f[1]
-                f[1] = f[1][:20] + '....'
+                f[1] = f[1][0:8] + '....' + f[1][-6:]
+                # f[1] = f[1][:20] + '....'
                 new_list.append((f[:7]))
                 f[1] = tmp
             else:
@@ -62,6 +63,7 @@ class Collector:
         print("FILE_COUNT:", file_count - 1)
         print(tabulate.tabulate(new_list, headers="firstrow", tablefmt='github', showindex=range(1, file_count),
                                 numalign="left"))
+
 
     def __set_file_list(self):
         self.__real_file_list.append(['Id', 'Name', 'Size', 'Type', 'Is_Trashed', 'Added Time', 'Path'])
@@ -137,8 +139,10 @@ class Collector:
             return FC_ERROR
         return FC_OK
 
+
     def get_num_of_file_list(self):
         return len(self.__real_file_list)
+
 
     def download_file(self, download_number):
         file_name = self.__file_n[download_number]
@@ -157,3 +161,58 @@ class Collector:
             os.rename('./download/' + file_name, './download/' + self.__real_file_list[download_number][1])
         except:
             pass
+
+
+    def search_file(self, q):
+        search_result = []
+        search_result.append(['Id', 'Name', 'Size', 'Type', 'Is_Trashed', 'Added Time', 'Path'])
+        search_response = self.__real_file_list
+
+        if len(search_response) == 0:
+            print("No Items.")
+        else:
+            for child in search_response:
+                if q in child[1]:
+                    search_result.append(child)
+
+        self.show_file_list_local(search_result)
+
+
+    def search_file_by_date(self, start, end):
+        search_result = []
+        search_result.append(['Id', 'Name', 'Size', 'Type', 'Is_Trashed', 'Added Time', 'Path'])
+        s_time = datetime.datetime.strptime(start, "%Y-%m-%d")
+        e_time = datetime.datetime.strptime(end, "%Y-%m-%d")
+        search_response = self.__real_file_list
+
+        for file in search_response:
+            if file == search_response[0]:
+                continue
+            a_time = file[5]
+            if s_time <= a_time and a_time <= e_time:
+                search_result.append(file)
+                continue
+
+        return self.show_file_list_local(search_result)
+
+
+    @staticmethod
+    def show_file_list_local(file_list):
+        result = list()
+
+        for f in file_list:
+            if len(f[1]) >= 20:
+                tmp = f[1]
+                f[1] = f[1][0:8] + '....' + f[1][-6:]
+                # f[1] = f[1][:20] + '....'
+                result.append((f[:7]))
+                f[1] = tmp
+            else:
+                result.append((f[:7]))
+
+        file_count = len(file_list)
+        print()
+        print("======DRIVE_FILE_LIST======")
+        print("FILE_COUNT:", file_count - 1)
+        print(tabulate.tabulate(result, headers="firstrow", tablefmt='github', showindex=range(1, file_count),
+                                numalign="left"))

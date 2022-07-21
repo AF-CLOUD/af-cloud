@@ -98,15 +98,33 @@ class Collector:
         return self.show_file_list_local(search_result)
 
     def show_file_list(self):
+        cnt = 0
+        new_list = []
+        new_list.append([self.__re_file_list[0][0], self.__re_file_list[0][1], self.__re_file_list[0][2], self.__re_file_list[0][3], self.__re_file_list[0][4], self.__re_file_list[0][5], self.__re_file_list[0][7]])
         file_count = len(self.__re_file_list)
         if file_count == 0:
             print("No FILE.")
             return None
         print("\n")
 
+        for file in self.__re_file_list:
+            if cnt == 0:
+                cnt = 1
+                continue
+
+            name = file[0]
+            mtype = file[2]
+
+            if len(name) >= 20:
+                name = name[0:8] + '....' + name[-6:]
+            if len(mtype) >= 20:
+                mtype = mtype[0:8] + '....' + mtype[-6:]
+
+            new_list.append([name, file[1], mtype, file[3], file[4], file[5], file[6]])
+
         print("======DRIVE_FILE_LIST======")
         print("FILE_COUNT:" + str(file_count - 1))
-        print(tabulate.tabulate(self.__re_file_list, headers="firstrow", tablefmt='github', showindex=range(1, file_count),
+        print(tabulate.tabulate(new_list, headers="firstrow", tablefmt='github', showindex=range(1, file_count),
                                 numalign="left"))
 
     def set_file_list(self):
@@ -121,21 +139,13 @@ class Collector:
             converted_ticks_modi = datetime.datetime(1, 1, 1, 9) + datetime.timedelta(microseconds=ticks_modi / 10)
             converted_ticks_modi.strftime("%Y-%m-%d %H:%M:%S")
 
-            name = file['name']
-            mtype = file['mimeType']
-
-            if len(name) >= 20:
-                name = name[0:8] + '....' + name[-6:]
-            if len(mtype) >= 20:
-                mtype = mtype[0:8] + '....' + mtype[-6:]
-
             if file.get('vault') == None:
-                result.append([name + file['extension'], file['size'], mtype, converted_ticks,
+                result.append([file['name'] + file['extension'], file['size'], file['mimeType'], converted_ticks,
                                converted_ticks_modi,
                                file['id'], 'False', file['urls']['download']])
             else:
                 result.append(
-                    [name + file['extension'], file['size'], mtype, converted_ticks,
+                    [file['name'] + file['extension'], file['size'], file['mimeType'], converted_ticks,
                      converted_ticks_modi, file['id'],
                      'True', file['urls']['download']])
 
@@ -161,24 +171,42 @@ class Collector:
             ticks_modi = file['modifiedDate']
             converted_ticks_modi = datetime.datetime(1, 1, 1, 9) + datetime.timedelta(microseconds=ticks_modi / 10)
             converted_ticks_modi.strftime("%Y-%m-%d %H:%M:%S")
-            name = file['name']
-            mtype = file['mimeType']
-
-            if len(name) >= 20:
-                name = name[0:8] + '....' + name[-6:]
-            if len(mtype) >= 20:
-                mtype = mtype[0:10] + '....' + mtype[-6]
 
             if file.get('vault') == None:
-                result.append([name + file['extension'], file['size'], mtype, converted_ticks,
+                result.append([file['name'] + file['extension'], file['size'], file['mimeType'], converted_ticks,
                                converted_ticks_modi,
                                file['id'], 'False', file['urls']['download']])
             else:
                 result.append(
-                    [name + file['extension'], file['size'], mtype, converted_ticks,
+                    [file['name'] + file['extension'], file['size'], file['mimeType'], converted_ticks,
                      converted_ticks_modi, file['id'],
                      'True', file['urls']['download']])
 
+        cnt = 0
+        new_list = []
+        new_list.append(
+            [result[0][0], result[0][1], result[0][2], result[0][3],
+             result[0][4], result[0][5], result[0][7]])
+        file_count = len(result)
+        if file_count == 0:
+            print("No FILE.")
+            return None
+        print("\n")
+
+        for file in result:
+            if cnt == 0:
+                cnt = 1
+                continue
+
+            name = file[0]
+            mtype = file[2]
+
+            if len(name) >= 20:
+                name = name[0:8] + '....' + name[-6:]
+            if len(mtype) >= 20:
+                mtype = mtype[0:8] + '....' + mtype[-6:]
+
+            new_list.append([name, file[1], mtype, file[3], file[4], file[5], file[6]])
         file_count = len(result)
         if file_count == 0:
             PRINTI("No FILE.")
@@ -187,7 +215,7 @@ class Collector:
 
         print("======DRIVE_FILE_LIST======")
         print("FILE_COUNT:" + str(file_count - 1))
-        print(tabulate.tabulate(result, headers="firstrow", tablefmt='github', showindex=range(1, file_count),
+        print(tabulate.tabulate(new_list, headers="firstrow", tablefmt='github', showindex=range(1, file_count),
                                 numalign="left"))
 
     def search_file_by_name(self, q):
