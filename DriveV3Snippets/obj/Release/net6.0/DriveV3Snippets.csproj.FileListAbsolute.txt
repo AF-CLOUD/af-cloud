@@ -1,0 +1,12 @@
+C:\Users\dfrc\Downloads\dotnet-samples-main (2)\dotnet-samples-main\drive\snippets\drive_v3\DriveV3Snippets\bin\Release\net6.0\DriveV3Snippets.deps.json
+C:\Users\dfrc\Downloads\dotnet-samples-main (2)\dotnet-samples-main\drive\snippets\drive_v3\DriveV3Snippets\bin\Release\net6.0\DriveV3Snippets.dll
+C:\Users\dfrc\Downloads\dotnet-samples-main (2)\dotnet-samples-main\drive\snippets\drive_v3\DriveV3Snippets\bin\Release\net6.0\DriveV3Snippets.pdb
+C:\Users\dfrc\Downloads\dotnet-samples-main (2)\dotnet-samples-main\drive\snippets\drive_v3\DriveV3Snippets\obj\Release\net6.0\DriveV3Snippets.csproj.AssemblyReference.cache
+C:\Users\dfrc\Downloads\dotnet-samples-main (2)\dotnet-samples-main\drive\snippets\drive_v3\DriveV3Snippets\obj\Release\net6.0\DriveV3Snippets.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\dfrc\Downloads\dotnet-samples-main (2)\dotnet-samples-main\drive\snippets\drive_v3\DriveV3Snippets\obj\Release\net6.0\DriveV3Snippets.AssemblyInfoInputs.cache
+C:\Users\dfrc\Downloads\dotnet-samples-main (2)\dotnet-samples-main\drive\snippets\drive_v3\DriveV3Snippets\obj\Release\net6.0\DriveV3Snippets.AssemblyInfo.cs
+C:\Users\dfrc\Downloads\dotnet-samples-main (2)\dotnet-samples-main\drive\snippets\drive_v3\DriveV3Snippets\obj\Release\net6.0\DriveV3Snippets.csproj.CoreCompileInputs.cache
+C:\Users\dfrc\Downloads\dotnet-samples-main (2)\dotnet-samples-main\drive\snippets\drive_v3\DriveV3Snippets\obj\Release\net6.0\DriveV3Snippets.dll
+C:\Users\dfrc\Downloads\dotnet-samples-main (2)\dotnet-samples-main\drive\snippets\drive_v3\DriveV3Snippets\obj\Release\net6.0\refint\DriveV3Snippets.dll
+C:\Users\dfrc\Downloads\dotnet-samples-main (2)\dotnet-samples-main\drive\snippets\drive_v3\DriveV3Snippets\obj\Release\net6.0\DriveV3Snippets.pdb
+C:\Users\dfrc\Downloads\dotnet-samples-main (2)\dotnet-samples-main\drive\snippets\drive_v3\DriveV3Snippets\obj\Release\net6.0\ref\DriveV3Snippets.dll
