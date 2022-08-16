@@ -1,0 +1,14 @@
+{
+  "version": 2,
+  "dgSpecHash": "pkOkxPiba1MeoHfv4KnEzMqjqVVzUG99FsnPrJ0HN6GSYO1j17xZqnn7YeElxE3hSjBvTgUxtv5PNd8ua/7T2Q==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\dfrc\\Downloads\\dotnet-samples-main (2)\\dotnet-samples-main\\drive\\snippets\\drive_v3\\DriveV3Example\\DriveV3Example.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\dfrc\\.nuget\\packages\\google.apis\\1.57.0\\google.apis.1.57.0.nupkg.sha512",
+    "C:\\Users\\dfrc\\.nuget\\packages\\google.apis.auth\\1.57.0\\google.apis.auth.1.57.0.nupkg.sha512",
+    "C:\\Users\\dfrc\\.nuget\\packages\\google.apis.core\\1.57.0\\google.apis.core.1.57.0.nupkg.sha512",
+    "C:\\Users\\dfrc\\.nuget\\packages\\google.apis.drive.v3\\1.57.0.2684\\google.apis.drive.v3.1.57.0.2684.nupkg.sha512",
+    "C:\\Users\\dfrc\\.nuget\\packages\\newtonsoft.json\\13.0.1\\newtonsoft.json.13.0.1.nupkg.sha512"
+  ],
+  "logs": []
+}
